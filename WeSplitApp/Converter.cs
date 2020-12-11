@@ -8,7 +8,7 @@ using System.Windows.Data;
 using System.IO;
 using System.Windows.Media.Imaging;
 
-namespace FoodRecipeApp
+namespace WeSplitApp
 {
     class Converter : IValueConverter
     {
@@ -45,7 +45,7 @@ namespace FoodRecipeApp
 
         public static BitmapImage ConvertToImage(string path)
         {
-           
+
             BitmapImage bitmapImage = null;
             if (File.Exists(path))
             {

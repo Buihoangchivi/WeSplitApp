@@ -4,12 +4,20 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WeSplitApp"
-        mc:Ignorable="d"
+        mc:Ignorable="d" Loaded="Window_Loaded"
         Title="HomeWindow" Height="690" Width="1152"
         WindowStyle="None" WindowStartupLocation="CenterScreen">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0"/>
     </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <local:Converter x:Key="converter"/>
+        <DataTemplate x:Key="groupingHeaderTemplate">
+            <TextBlock Foreground ="{Binding ColorScheme}"
+             FontWeight="Bold" FontSize="16"/>
+        </DataTemplate>
+    </Window.Resources>
 
     <Grid>
 
