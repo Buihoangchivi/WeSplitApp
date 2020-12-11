@@ -9,6 +9,7 @@ public class Trip : INotifyPropertyChanged
 {
 	private string tripName;
 	private string location;
+	private int stage;
 	private List<string> imagesList;
 	private List<Member> membersList;
 
@@ -34,6 +35,18 @@ public class Trip : INotifyPropertyChanged
 		{
 			location = value;
 			OnPropertyChanged("Location");
+		}
+	}
+	public int Stage
+	{
+		get
+		{
+			return stage;
+		}
+		set
+		{
+			stage = value;
+			OnPropertyChanged("Stage");
 		}
 	}
 	public List<string> ImagesList
