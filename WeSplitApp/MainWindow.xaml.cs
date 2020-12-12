@@ -35,7 +35,7 @@ namespace WeSplitApp
 		private List<string> StageList;
 		private Condition FilterCondition = new Condition { Favorite = false, Type = "" };
 
-		private bool isMinimizeMenu, isEditMode;
+		private bool isMinimizeMenu, isEditMode, CheckFavoriteIsClicked;
 		private int TripPerPage = 12;           //Số chuyến đi mỗi trang
 		private int _totalPage = 0;             //Tổng số trang
 		public int TotalPage
@@ -221,7 +221,11 @@ namespace WeSplitApp
 			//Mặc định khi mở ứng dụng thị hiển thị menu ở dạng mở rộng
 			isMinimizeMenu = false;
 
+			//Mặc định không ở chế độ chỉnh sửa chuyến đi
 			isEditMode = false;
+
+			//Mặc định chưa nhấn nút yêu thích trong bất kì chuyến đi nào
+			CheckFavoriteIsClicked = false;
 
 			//Lấy danh sách food
 			var trips = TripOnScreen.Take(TripPerPage);
@@ -312,8 +316,8 @@ namespace WeSplitApp
 		/*Cập nhật lại danh sách món ăn trên màn hình sau khi nhấn thích*/
 		private void UpdateFoodStatus()
 		{
-			//view.Filter = Filter;
-			//GetFilterList();
+			view.Filter = Filter;
+			GetFilterList();
 			TotalPage = ((TripOnScreen.Count - 1) / TripPerPage) + 1;
 			if (CurrentPage > TotalPage)
 			{
@@ -357,7 +361,36 @@ namespace WeSplitApp
 			}
 		}
 
+		//Lấy chỉ số phần tử của chuyến đi trong mảng
+		private int GetElementIndexInArray(Button button)
+		{
+			var curTrip = new Trip();
+			//Nếu nhấn hình ảnh món ăn ở màn hình Home
+			if (button.Content.GetType().Name == "WrapPanel")
+			{
+				var wrapPanel = (WrapPanel)button.Content;
+				curTrip = (Trip)wrapPanel.DataContext;
+			}
+			else //Nếu nhấn món ăn ở trong nút Search
+			{
+				curTrip = (Trip)button.DataContext;
+			}
 
+			var result = 0;
+			for (int i = 0; i < TripInfoList.Count; i++)
+			{
+				if (curTrip == TripInfoList[i])
+				{
+					result = i;
+					break;
+				}
+				else
+				{
+					//Do nothing
+				}
+			}
+			return result;
+		}
 
 		//---------------------------------------- Các hàm lưu trữ dữ liệu --------------------------------------------//
 
@@ -725,7 +758,106 @@ namespace WeSplitApp
 			}
 		}
 
+		private void Favorite_Click(object sender, RoutedEventArgs e)
+		{
+			CheckFavoriteIsClicked = true;
+		}
 
+		private void Trip_Click(object sender, RoutedEventArgs e)
+		{
+			if (CheckFavoriteIsClicked == false)
+			{
+				//Đóng giao diện Panel hiện tại
+				/*ProcessPanelVisible(Visibility.Collapsed);
+
+				//Lấy chỉ số của hình ảnh món ăn được nhấn
+				if (sender != null)
+				{
+					CurrentElementIndex = GetElementIndexInArray((Button)sender);
+				}
+				else
+				{
+					if (e == null)
+					{
+						CurrentElementIndex = (int)windowsStack.Peek()[0];
+					}
+					else
+					{
+						if (isEditMode == false)
+						{
+							CurrentElementIndex = ListFoodInfo.Count - 1;
+						}
+						else
+						{
+							//Do nothing
+						}
+					}
+				}
+
+				//Binding dữ liệu để hiển thị chi tiết món ăn
+				FoodDetailGrid.DataContext = ListFoodInfo[CurrentElementIndex];
+
+				//Thay đổi màu chữ cho tiêu đề thông tin chi tiết món ăn
+				FoodInfo_NameTextBlock.Foreground = (SolidColorBrush)new BrushConverter().ConvertFromString(ColorScheme);
+				FoodInfo_IngredientsTextBlock.Foreground = FoodInfo_NameTextBlock.Foreground;
+				FoodInfo_DirectionsTextBlock.Foreground = FoodInfo_NameTextBlock.Foreground;
+				FoodInfo_VideoTextBlock.Foreground = FoodInfo_NameTextBlock.Foreground;
+
+				UpdatePaginationForDetailFoodUI();
+
+				if (windowsStack.Count == 1)
+				{
+					var listStack = windowsStack.Pop();
+					var condition = new Condition { Favorite = FilterCondition.Favorite, Type = FilterCondition.Type };
+					listStack.Insert(listStack.Count - 1, condition);
+					windowsStack.Push(listStack);
+				}
+				else
+				{
+					//Do nothing
+				}
+
+				if (sender != null || e != null)
+				{
+					//Mở giao diện chi tiết món ăn
+					windowsStack.Push(new List<object> { CurrentElementIndex, FoodDetailScrollViewer, clickedControlButton });
+					ProcessPanelVisible(Visibility.Visible);
+
+					//Hiển thị nút quay lại
+					if (BackButton.Visibility == Visibility.Collapsed)
+					{
+						BackButton.Visibility = Visibility.Visible;
+					}
+					else
+					{
+						//Do nothing
+					}
+				}
+				else
+				{
+					//Do nothing
+				}*/
+			}
+			else
+			{
+				int index = GetElementIndexInArray((Button)sender);
+
+				//Nếu chưa yêu thích thì chuyển sang ảnh yêu thích và thêm vào danh sách yêu thích
+				if (TripInfoList[index].IsFavorite == true)
+				{
+					TripInfoList[index].IsFavorite = false;
+				}
+				else //Nếu yêu thích rồi chuyển sang ảnh chưa yêu thích và xóa khỏi danh sách yêu thích
+				{
+					TripInfoList[index].IsFavorite = true;
+				}
+
+				CheckFavoriteIsClicked = false;
+
+				//Cập nhật lại giao diện
+				UpdateFoodStatus();
+			}
+		}
 
 		//---------------------------------------- Các hàm xử lý khác --------------------------------------------//
 

@@ -522,7 +522,8 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button Width="204" VerticalContentAlignment="Top" Background="White" Margin="0,0,8,10" BorderThickness="0" >
+                            <Button Width="204" VerticalContentAlignment="Top" Click="Trip_Click"
+                                    Background="White" Margin="0,0,8,10" BorderThickness="0" >
                                 <Button.Resources>
                                     <Style TargetType="Border">
                                         <Setter Property="CornerRadius" Value="10"/>
@@ -541,7 +542,7 @@
                                                FontSize="14" Padding="3,1" MaxHeight="300" Foreground="Gray"></TextBlock>
                                     
                                     <Button Height="24" VerticalAlignment="Top" BorderThickness="0" Background="White"
-                                            Padding="2.8">
+                                            Padding="2.8" Click="Favorite_Click">
                                         <Button.Resources>
                                             <Style TargetType="Border">
                                                 <Setter Property="CornerRadius" Value="14"/>
