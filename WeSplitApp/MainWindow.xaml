@@ -534,8 +534,12 @@
                                             <ImageBrush ImageSource="{Binding PrimaryImagePath, Converter={StaticResource converter}}" RenderOptions.BitmapScalingMode="HighQuality"/>
                                         </Rectangle.Fill>
                                     </Rectangle>
-                                    <TextBlock Text="{Binding TripName}" Width="175" TextAlignment="Left" TextWrapping="Wrap" 
-                                               FontSize="14" Padding="3,1" MaxHeight="300"></TextBlock>
+
+                                    <Image Source="Images/location.png" Width="18" Height="18" RenderOptions.BitmapScalingMode="HighQuality"/>
+
+                                    <TextBlock Text="{Binding Location}" Width="157" TextAlignment="Left" TextWrapping="Wrap" 
+                                               FontSize="14" Padding="3,1" MaxHeight="300" Foreground="Gray"></TextBlock>
+                                    
                                     <Button Height="24" VerticalAlignment="Top" BorderThickness="0" Background="White"
                                             Padding="2.8">
                                         <Button.Resources>
@@ -578,6 +582,9 @@
                                             </WrapPanel>
                                         </Button.Content>
                                     </Button>
+
+                                    <TextBlock Text="{Binding TripName}" TextAlignment="Left" TextWrapping="Wrap" Width="204" 
+                                               FontSize="15" Padding="3,1" MaxHeight="300" FontFamily="Segoe UI Semibold" ></TextBlock>
                                 </WrapPanel>
                             </Button>
                         </DataTemplate>
