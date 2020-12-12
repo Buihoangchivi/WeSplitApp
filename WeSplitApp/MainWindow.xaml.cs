@@ -34,7 +34,7 @@ namespace WeSplitApp
 		private List<ColorSetting> ListColor;
 		private List<string> StageList;
 
-		private bool isMinimizeMenu;
+		private bool isMinimizeMenu, isEditMode;
 		private int TripPerPage = 12;           //Số chuyến đi mỗi trang
 		private int _totalPage = 0;             //Tổng số trang
 		public int TotalPage
@@ -213,13 +213,18 @@ namespace WeSplitApp
 			//Mặc định khi mở ứng dụng thị hiển thị menu ở dạng mở rộng
 			isMinimizeMenu = false;
 
+			isEditMode = false;
+
 			//Lấy danh sách food
 			var trips = TripOnScreen.Take(TripPerPage);
 			TripButtonItemsControl.ItemsSource = trips;
 			view = (CollectionView)CollectionViewSource.GetDefaultView(TripInfoList);
 			TripListAppearAnimation();
 
-			SaveListFood();
+			//Default buttons
+			clickedTypeButton = AllButton;
+			clickedTypeButton.Foreground = (SolidColorBrush)new BrushConverter().ConvertFromString(ColorScheme);
+			clickedControlButton = HomeButton;
 		}
 
 		public MainWindow()
@@ -269,6 +274,58 @@ namespace WeSplitApp
 			}
 		}
 
+		//Cập nhật lại thay đổi từ dữ liệu lên màn hình
+		private void UpdateUIFromData()
+		{
+			//view.Filter = Filter;
+
+			/*Lấy danh sách thức ăn đã được lọc để khởi tạo lại số trang */
+			//GetFilterList();
+			TotalPage = ((TripOnScreen.Count - 1) / TripPerPage) + 1;
+			CurrentPage = 1;
+
+			var trips = TripOnScreen.Take(TripPerPage);
+			TripButtonItemsControl.ItemsSource = trips;
+
+			TotalItem = TripOnScreen.Count.ToString();
+			if (TripOnScreen.Count > 1)
+			{
+				TotalItem += " items";
+			}
+			else
+			{
+				TotalItem += " item";
+			}
+			TripListAppearAnimation();
+			UpdatePageButtonStatus();
+
+		}
+
+		/*Cập nhật lại danh sách món ăn trên màn hình sau khi nhấn thích*/
+		private void UpdateFoodStatus()
+		{
+			//view.Filter = Filter;
+			//GetFilterList();
+			TotalPage = ((TripOnScreen.Count - 1) / TripPerPage) + 1;
+			if (CurrentPage > TotalPage)
+			{
+				CurrentPage--;
+			}
+			/*Lấy danh sách thức ăn đã được lọc để khởi tạo lại số trang */
+			var trips = TripOnScreen.Skip((CurrentPage - 1) * TripPerPage).Take(TripPerPage);
+			TripButtonItemsControl.ItemsSource = trips;
+
+			TotalItem = TripOnScreen.Count.ToString();
+			if (TripOnScreen.Count > 1)
+			{
+				TotalItem += " items";
+			}
+			else
+			{
+				TotalItem += " item";
+			}
+			UpdatePageButtonStatus();
+		}
 
 
 
@@ -281,6 +338,324 @@ namespace WeSplitApp
 			TextWriter writer = new StreamWriter(@"Data\Trip.xml");
 			xs.Serialize(writer, TripInfoList);
 			writer.Close();
+		}
+
+
+		//---------------------------------------- Xử lý cửa sổ --------------------------------------------//
+
+		//Cài đặt nút đóng cửa sổ
+		private void CloseButton_Click(object sender, RoutedEventArgs e)
+		{
+			SaveListFood();
+			Application.Current.Shutdown();
+
+		}
+		//Cài đặt nút phóng to/ thu nhỏ cửa sổ
+		private void MaximizeButton_Click(object sender, RoutedEventArgs e)
+		{
+			AdjustWindowSize();
+		}
+
+		//Cài đặt nút ẩn cửa sổ
+		private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+		{
+			this.WindowState = WindowState.Minimized;
+		}
+
+		//Thay đổi kích thước cửa sổ
+		//Nếu đang ở trạng thái phóng to thì thu nhỏ và ngược lại
+		private void AdjustWindowSize()
+		{
+			var imgName = "";
+
+			if (WindowState == WindowState.Maximized)
+			{
+				WindowState = WindowState.Normal;
+				imgName = "Images/maximize.png";
+			}
+			else
+			{
+				WindowState = WindowState.Maximized;
+				imgName = "Images/restoreDown.png";
+			}
+
+			//Lấy nguồn ảnh
+			var img = new BitmapImage(new Uri(
+						imgName,
+						UriKind.Relative)
+				);
+
+			//Thiết lập ảnh chất lượng cao
+			RenderOptions.SetBitmapScalingMode(img, BitmapScalingMode.HighQuality);
+
+			//Thay đổi icon
+			(MaxButton.Content as Image).Source = img;
+		}
+
+
+
+
+		//---------------------------------------- Xử lý các nút bấm --------------------------------------------//
+
+		private void ChangeClickedTypeButton_Click(object sender, RoutedEventArgs e)
+		{
+			clickedTypeButton.Foreground = Brushes.Gray;
+
+			var button = (Button)sender;
+			clickedTypeButton = button;
+			button.Foreground = (SolidColorBrush)new BrushConverter().ConvertFromString(ColorScheme);
+
+			//Hiển thị các món ăn thuộc loại thức ăn được chọn
+			/*if (button == AllButton)
+			{
+				FilterCondition.Type = "";
+			}
+			else if (button == FoodButton)
+			{
+				FilterCondition.Type = "Food";
+			}
+			else if (button == DrinksButton)
+			{
+				FilterCondition.Type = "Drinks";
+			}
+			else
+			{
+				//Do nothing
+			}*/
+
+			//Cập nhật lại giao diện
+			UpdateUIFromData();
+		}
+
+		private void ChangeClickedControlButton_Click(object sender, RoutedEventArgs e)
+		{
+			//Tắt màu của nút hiện tại
+			var wrapPanel = (WrapPanel)clickedControlButton.Content;
+			var collection = wrapPanel.Children;
+			var block = (TextBlock)collection[0];
+			var text = (TextBlock)collection[2];
+			block.Background = Brushes.Transparent;
+			text.Foreground = Brushes.Black;
+
+			//Hiển thị màu cho nút vừa được nhấn
+			var button = (Button)sender;
+			wrapPanel = (WrapPanel)button.Content;
+			collection = wrapPanel.Children;
+			block = (TextBlock)collection[0];
+			text = (TextBlock)collection[2];
+			block.Background = (SolidColorBrush)new BrushConverter().ConvertFromString(ColorScheme);
+			text.Foreground = block.Background;
+
+			clickedControlButton = button;
+			/*if (button != clickedControlButton)
+			{
+				//Đóng giao diện cũ trước khi nhấn nút
+				if (!isEditMode && (clickedControlButton == HomeButton || clickedControlButton == FavoriteButton))
+				{
+					var listStack = windowsStack.Pop();
+					var condition = new Condition { Favorite = FilterCondition.Favorite, Type = FilterCondition.Type };
+					listStack.Insert(listStack.Count - 1, condition);
+					windowsStack.Push(listStack);
+				}
+				else if (clickedControlButton == AddDishButton)
+				{
+					AddFood.DataContext = null;
+					DefaultLevelComboxBoxItem.IsSelected = true;
+					DefaultTypeComboxBoxItem.IsSelected = true;
+					SaveOrDiscardBorder.Visibility = Visibility.Collapsed;
+					EnterFoodNameTextBlock.Visibility = Visibility.Collapsed;
+					ControlStackPanel.Visibility = Visibility.Visible;
+					AddFoodAnhDishScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+				}
+				else
+				{
+					//Do nothing
+				}
+
+				//Đóng giao diện Panel hiện tại
+				ProcessPanelVisible(Visibility.Collapsed);
+
+				//Nếu nhấn sang cửa sổ thứ 2 thì hiển thị nút Back
+				if (windowsStack.Count == 1)
+				{
+					BackButton.Visibility = Visibility.Visible;
+				}
+				else
+				{
+					//Do nothing
+				}
+
+				List<object> list = new List<object>();
+
+				//Mở giao diện mới sau khi nhấn nút
+				if (button == HomeButton)
+				{
+					FilterCondition.Favorite = false;
+
+					//Xóa hết lịch sử các cửa sổ khác khi nhấn nút Home
+					while (windowsStack.Count > 0)
+					{
+						windowsStack.Pop();
+					}
+					//Thêm màn hình Favorite vào stack
+					list.Add(PaginationBar);
+					list.Add(TypeBar);
+					list.Add(foodButtonItemsControl);
+					list.Add(FilterCondition);
+
+					//Nếu nhấn sang nút Home thì không còn trang nào phía trước
+					BackButton.Visibility = Visibility.Collapsed;
+				}
+				else if (button == FavoriteButton)
+				{
+					FilterCondition.Favorite = true;
+
+					//Thêm màn hình Favorite vào stack
+					list.Add(PaginationBar);
+					list.Add(TypeBar);
+					list.Add(foodButtonItemsControl);
+					list.Add(FilterCondition);
+				}
+				else if (button == AddDishButton)
+				{
+					AddFoodAnhDishScrollViewer.ScrollToHome();
+					ControlStackPanel.Visibility = Visibility.Collapsed;
+					AddFoodAnhDishScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+					SortFoodList();
+					ListStep = new BindingList<Step>();
+					if (isEditMode == false)
+					{
+						//AddFood.DataContext = null;
+						//DefaultLevelComboxBoxItem.IsSelected = true;
+						//DefaultTypeComboxBoxItem.IsSelected = true;
+						//SaveOrDiscardBorder.Visibility = Visibility.Collapsed;
+						//EnterFoodNameTextBlock.Visibility = Visibility.Collapsed;
+
+						var index = GetMinID();
+						newFood = new FoodInfomation() { ID = index, VideoLink = "", Steps = new BindingList<Step>() };
+					}
+					else
+					{
+						var food = ListFoodInfo[CurrentElementIndex];
+						newFood = food;
+						editFood = new FoodInfomation()
+						{
+							PrimaryImagePath = food.PrimaryImagePath,
+							DateAdd = food.DateAdd,
+							Discription = food.Discription,
+							ID = food.ID,
+							Ingredients = food.Ingredients,
+							IsFavorite = food.IsFavorite,
+							Level = food.Level,
+							Name = food.Name,
+							Steps = new BindingList<Step>(),
+							Type = food.Type,
+							VideoLink = food.VideoLink
+						};
+						//AddFood.DataContext = ListFoodInfo[CurrentElementIndex];
+						//ImageStepItemsControl.ItemsSource = ListFoodInfo[CurrentElementIndex].Steps;
+						foreach (var step in food.Steps)
+						{
+							editFood.Steps.Add(step);
+						}
+						for (int i = 0; i < LevelComboBox.Items.Count; i++)
+						{
+							var comboboxItem = LevelComboBox.Items[i] as ComboBoxItem;
+							if (newFood.Level == (string)comboboxItem.Content)
+							{
+								LevelComboBox.SelectedIndex = i;
+								break;
+							}
+						}
+
+						for (int i = 0; i < LevelComboBox.Items.Count; i++)
+						{
+							var comboboxItem = TypeComboBox.Items[i] as ComboBoxItem;
+							if (newFood.Type == (string)comboboxItem.Content)
+							{
+								TypeComboBox.SelectedIndex = i;
+								break;
+							}
+						}
+					}
+
+					AddFood.DataContext = newFood;
+					ImageStepItemsControl.ItemsSource = newFood.Steps;
+
+
+					//ListStep = newFood.Steps;
+
+					//Thêm màn hình Add vào stack
+					list.Add(AddFood);
+
+					//Thay đổi màu chữ cho các tiêu đề trong món ăn
+					AddFood_TitleTextBlock.Foreground = (SolidColorBrush)new BrushConverter().ConvertFromString(ColorScheme);
+					AddFood_LinkVideoTextBlock.Foreground = AddFood_TitleTextBlock.Foreground;
+					AddFood_LevelTextBlock.Foreground = AddFood_TitleTextBlock.Foreground;
+					AddFood_TypeTextBlock.Foreground = AddFood_TitleTextBlock.Foreground;
+					AddFood_PhotosTextBlock.Foreground = AddFood_TitleTextBlock.Foreground;
+					AddFood_DescriptionTextBlock.Foreground = AddFood_TitleTextBlock.Foreground;
+					AddFood_IngredientsTextBlock.Foreground = AddFood_TitleTextBlock.Foreground;
+					AddFood_DirectionsTextBlock.Foreground = AddFood_TitleTextBlock.Foreground;
+				}
+				else if (button == DishButton)
+				{
+					//Thêm màn hình Note vào stack
+					list.Add(DishList);
+				}
+				else if (button == SettingButton)
+				{
+					var value = ConfigurationManager.AppSettings["ShowSplashScreen"];
+					bool showSplashStatus = bool.Parse(value);
+					if (showSplashStatus == true)
+					{
+						ShowSplashScreenCheckBox.IsChecked = true;
+					}
+					list.Add(SettingStackPanel);
+				}
+				else if (button == AboutButton)
+				{
+					list.Add(AboutStackPanel);
+				}
+				else
+				{
+					//Do nothing
+				}
+
+				//Cập nhật lại nút được chọn
+				clickedControlButton = button;
+
+				//Mở giao diện Panel vừa được chọn
+				list.Add(clickedControlButton);
+				windowsStack.Push(list);
+				ProcessPanelVisible(Visibility.Visible);
+
+				//Cập nhật lại giao diện
+				UpdateUIFromData();
+			}
+			else
+			{
+				//Do nothing
+			}*/
+		}
+
+		private void MenuButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (isMinimizeMenu == false)
+			{
+				col0.Width = new GridLength(46);
+				TripPerPage = 15;
+				UpdateFoodStatus();
+				isMinimizeMenu = true;
+
+			}
+			else
+			{
+				col0.Width = new GridLength(250);
+				TripPerPage = 12;
+				UpdateFoodStatus();
+				isMinimizeMenu = false;
+			}
 		}
 
 

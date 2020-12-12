@@ -28,7 +28,7 @@
             <RowDefinition Height="28"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="250" x:Name="col0"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
@@ -43,7 +43,7 @@
             <TextBlock HorizontalAlignment="Center" DockPanel.Dock="Left" Margin="10,0,0,0" 
                        FontSize="15" VerticalAlignment="Center" Foreground="White">We Split</TextBlock>
             <Button x:Name="CloseButton" Width="47" BorderThickness="0" 
-                    DockPanel.Dock="Right">
+                    DockPanel.Dock="Right" Click="CloseButton_Click">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="Background" Value="{Binding ColorScheme}"/>
@@ -66,7 +66,7 @@
                 <Image RenderOptions.BitmapScalingMode="HighQuality" Margin="12" Source="Images/close.png"></Image>
             </Button>
 
-            <Button x:Name="MaxButton" Width="47"  BorderThickness="0" 
+            <Button x:Name="MaxButton" Width="47" Click="MaximizeButton_Click" BorderThickness="0" 
                     DockPanel.Dock="Right">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
@@ -90,7 +90,7 @@
                 <Image Source="Images/maximize.png" RenderOptions.BitmapScalingMode="HighQuality" Margin="12"></Image>
             </Button>
 
-            <Button x:Name="MinButton" Width="47"  BorderThickness="0"
+            <Button x:Name="MinButton" Width="47" Click="MinimizeButton_Click" BorderThickness="0"
                     DockPanel.Dock="Right">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
@@ -120,7 +120,7 @@
         <StackPanel x:Name="ControlStackPanel" Grid.Row="1" Grid.RowSpan="3"
                     Grid.Column="0" Background="#FFDDDDDD" Width="250">
 
-            <Button Height="45" Name="MenuButton"  BorderThickness="0" 
+            <Button Height="45" Name="MenuButton" Click="MenuButton_Click" BorderThickness="0" 
                     HorizontalContentAlignment="Left" Padding="0,1,1,1">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
@@ -148,7 +148,8 @@
                 </WrapPanel>
             </Button>
 
-            <Button Height="45" Name="HomeButton"  BorderThickness="0" HorizontalContentAlignment="Left" Padding="0,1,1,1">
+            <Button Height="45" Name="HomeButton" BorderThickness="0" Click="ChangeClickedControlButton_Click"
+                    HorizontalContentAlignment="Left" Padding="0,1,1,1">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="Background" Value="#FFDDDDDD"/>
@@ -169,12 +170,13 @@
                     </Style>
                 </Button.Style>
                 <WrapPanel>
-                    <TextBlock Width="4" Height="45" Background="{Binding ColorScheme}"></TextBlock>
+                    <TextBlock Width="5" Height="45" Background="{Binding ColorScheme}"></TextBlock>
                     <Image Source="Images/homeImage.png" Width="20" Margin="10,0" RenderOptions.BitmapScalingMode="HighQuality"></Image>
                     <TextBlock VerticalAlignment="Center" Width="153" FontSize="15" Foreground="{Binding ColorScheme}">Home</TextBlock>
                 </WrapPanel>
             </Button>
-            <Button Height="45" Name="FavoriteButton"  BorderThickness="0" HorizontalContentAlignment="Left">
+            <Button Height="45" Name="FavoriteButton" Click="ChangeClickedControlButton_Click"
+                    BorderThickness="0" HorizontalContentAlignment="Left">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="Background" Value="#FFDDDDDD"/>
@@ -200,7 +202,8 @@
                     <TextBlock VerticalAlignment="Center" Width="153" FontSize="15">Favorite</TextBlock>
                 </WrapPanel>
             </Button>
-            <Button Height="45" Name="AddDishButton"  BorderThickness="0" HorizontalContentAlignment="Left">
+            <Button Height="45" Name="AddTripButton" Click="ChangeClickedControlButton_Click"
+                    BorderThickness="0" HorizontalContentAlignment="Left">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="Background" Value="#FFDDDDDD"/>
@@ -227,7 +230,8 @@
                 </WrapPanel>
             </Button>
 
-            <Button Height="45" Name="SettingButton"  BorderThickness="0" HorizontalContentAlignment="Left">
+            <Button Height="45" Name="SettingButton" Click="ChangeClickedControlButton_Click"
+                    BorderThickness="0" HorizontalContentAlignment="Left">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="Background" Value="#FFDDDDDD"/>
@@ -254,7 +258,8 @@
                 </WrapPanel>
             </Button>
 
-            <Button Height="45" Name="AboutButton"  BorderThickness="0" HorizontalContentAlignment="Left">
+            <Button Height="45" Name="AboutButton" Click="ChangeClickedControlButton_Click"
+                    BorderThickness="0" HorizontalContentAlignment="Left">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="Background" Value="#FFDDDDDD"/>
@@ -352,7 +357,7 @@
         <!--Thanh để lọc loại thức ăn-->
         <DockPanel Name="TypeBar" Height="40" Margin="15,0" Grid.Row="1" Grid.Column="1" Visibility="Visible">
             <StackPanel Orientation="Horizontal" Width="590" DockPanel.Dock="Left">
-                <Button Height="40" Width="130" x:Name="AllButton"  
+                <Button Height="40" Width="130" x:Name="AllButton" Click="ChangeClickedTypeButton_Click"
                         BorderThickness="0" Content="All" FontSize="15" Foreground="Gray">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
@@ -374,7 +379,7 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                <Button Height="40" Width="130" x:Name="ProcessingButton"  
+                <Button Height="40" Width="130" x:Name="ProcessingButton" Click="ChangeClickedTypeButton_Click"
                         BorderThickness="0" Content="Processing" FontSize="15" Foreground="Gray">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
@@ -396,7 +401,7 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                <Button Height="40" Width="130" x:Name="AccomplishedButton"  
+                <Button Height="40" Width="130" x:Name="AccomplishedButton" Click="ChangeClickedTypeButton_Click"
                         BorderThickness="0" Content="Accomplished" FontSize="15" Foreground="Gray">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
