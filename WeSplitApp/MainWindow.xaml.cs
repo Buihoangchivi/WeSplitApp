@@ -33,6 +33,7 @@ namespace WeSplitApp
 		private List<Trip> TripOnScreen;						//Danh sách chuyến đi để hiện trên màn hình
 		private List<ColorSetting> ListColor;
 		private List<string> StageList;
+		private Condition FilterCondition = new Condition { Favorite = false, Type = "" };
 
 		private bool isMinimizeMenu, isEditMode;
 		private int TripPerPage = 12;           //Số chuyến đi mỗi trang
@@ -108,6 +109,13 @@ namespace WeSplitApp
 		public class ColorSetting
 		{
 			public string Color { get; set; }
+		}
+
+		//Class điều kiện để filter
+		class Condition
+		{
+			public bool Favorite;
+			public string Type;
 		}
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -277,10 +285,10 @@ namespace WeSplitApp
 		//Cập nhật lại thay đổi từ dữ liệu lên màn hình
 		private void UpdateUIFromData()
 		{
-			//view.Filter = Filter;
+			view.Filter = Filter;
 
-			/*Lấy danh sách thức ăn đã được lọc để khởi tạo lại số trang */
-			//GetFilterList();
+			//Lấy danh sách thức ăn đã được lọc để khởi tạo lại số trang
+			GetFilterList();
 			TotalPage = ((TripOnScreen.Count - 1) / TripPerPage) + 1;
 			CurrentPage = 1;
 
@@ -325,6 +333,28 @@ namespace WeSplitApp
 				TotalItem += " item";
 			}
 			UpdatePageButtonStatus();
+		}
+
+
+
+		//---------------------------------------- Các hàm Get --------------------------------------------//
+
+		//Get current app domain
+		public static string GetAppDomain()
+		{
+			string absolutePath;
+			absolutePath = AppDomain.CurrentDomain.BaseDirectory;
+			return absolutePath;
+		}
+
+		//Lấy danh sách món ăn của view
+		private void GetFilterList()
+		{
+			TripOnScreen = new List<Trip>();
+			foreach (var trip in view)
+			{
+				TripOnScreen.Add((Trip)trip);
+			}
 		}
 
 
@@ -394,6 +424,30 @@ namespace WeSplitApp
 
 
 
+		//---------------------------------------- Các hàm sắp xếp --------------------------------------------//
+
+		private bool Filter(object item)
+		{
+			bool result;
+			var tripInfo = (Trip)item;
+			if (FilterCondition.Favorite == true && tripInfo.IsFavorite == false)
+			{
+				result = false;
+			}
+			else if (FilterCondition.Type != "" &&
+				((FilterCondition.Type == "Processing" && tripInfo.Stage == 4) ||
+				(FilterCondition.Type == "Accomplished" && tripInfo.Stage < 4)))
+			{
+				result = false;
+			}
+			else
+			{
+				result = true;
+			}
+			return result;
+		}
+
+
 
 		//---------------------------------------- Xử lý các nút bấm --------------------------------------------//
 
@@ -406,22 +460,22 @@ namespace WeSplitApp
 			button.Foreground = (SolidColorBrush)new BrushConverter().ConvertFromString(ColorScheme);
 
 			//Hiển thị các món ăn thuộc loại thức ăn được chọn
-			/*if (button == AllButton)
+			if (button == AllButton)
 			{
 				FilterCondition.Type = "";
 			}
-			else if (button == FoodButton)
+			else if (button == ProcessingButton)
 			{
-				FilterCondition.Type = "Food";
+				FilterCondition.Type = "Processing";
 			}
-			else if (button == DrinksButton)
+			else if (button == AccomplishedButton)
 			{
-				FilterCondition.Type = "Drinks";
+				FilterCondition.Type = "Accomplished";
 			}
 			else
 			{
 				//Do nothing
-			}*/
+			}
 
 			//Cập nhật lại giao diện
 			UpdateUIFromData();
@@ -647,7 +701,6 @@ namespace WeSplitApp
 				TripPerPage = 15;
 				UpdateFoodStatus();
 				isMinimizeMenu = true;
-
 			}
 			else
 			{
