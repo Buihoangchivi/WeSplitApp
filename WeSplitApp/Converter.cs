@@ -8,7 +8,7 @@ using System.Windows.Data;
 using System.IO;
 using System.Windows.Media.Imaging;
 
-namespace FoodRecipeApp
+namespace WeSplitApp
 {
     class Converter : IValueConverter
     {

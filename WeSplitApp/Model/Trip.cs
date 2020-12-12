@@ -7,10 +7,33 @@ using System.ComponentModel;
 
 public class Trip : INotifyPropertyChanged
 {
+	public class TripImage : INotifyPropertyChanged
+	{
+		public event PropertyChangedEventHandler PropertyChanged;
+		private string _ImagePath;
+		public string ImagePath
+		{
+			get
+			{
+				return _ImagePath;
+			}
+			set
+			{
+				_ImagePath = value;
+				if (PropertyChanged != null)
+				{
+					PropertyChanged(this, new PropertyChangedEventArgs("ImagePath"));
+				}
+			}
+		}
+	}
 	private string tripName;
 	private string location;
-	private List<string> imagesList;
+	private List<TripImage> imagesList;
 	private List<Member> membersList;
+	private string _status;
+	private string _avatar;
+	private string _tripDestination;
 
 	public string TripName
 	{
@@ -36,19 +59,19 @@ public class Trip : INotifyPropertyChanged
 			OnPropertyChanged("Location");
 		}
 	}
-	public List<string> ImagesList
+	public List<TripImage> ImagesList
 	{
 		get
 		{
-			return imagesList;
-		}
-		set
-		{
-			imagesList = value;
-			OnPropertyChanged("ImagesList");
-		}
-	}
-	public List<Member> MembersList
+            return imagesList;
+        }
+        set
+        {
+            imagesList = value;
+            OnPropertyChanged("ImagesList");
+        }
+    }
+    public List<Member> MembersList
 	{
 		get
 		{
@@ -58,6 +81,44 @@ public class Trip : INotifyPropertyChanged
 		{
 			membersList = value;
 			OnPropertyChanged("MembersList");
+		}
+	}
+	public string Status
+	{
+		get
+		{
+			return _status;
+		}
+		set
+		{
+			_status = value;
+			OnPropertyChanged("Status");
+		}
+	}
+
+	public string Avatar
+	{
+		get
+		{
+			return _avatar;
+		}
+		set
+		{
+			_avatar = value;
+			OnPropertyChanged("Avatar");
+		}
+	}
+
+	public string TripDestination
+	{
+		get
+		{
+			return _tripDestination;
+		}
+		set
+		{
+			_tripDestination = value;
+			OnPropertyChanged("TripDestination");
 		}
 	}
 
