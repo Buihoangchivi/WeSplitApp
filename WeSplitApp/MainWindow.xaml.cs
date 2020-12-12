@@ -500,7 +500,21 @@ namespace WeSplitApp
 			block.Background = (SolidColorBrush)new BrushConverter().ConvertFromString(ColorScheme);
 			text.Foreground = block.Background;
 
+			//Cập nhật nút mới
 			clickedControlButton = button;
+
+			//Mở giao diện mới sau khi nhấn nút
+			if (button == HomeButton)
+			{
+				FilterCondition.Favorite = false;
+			}
+			else if (button == FavoriteButton)
+			{
+				FilterCondition.Favorite = true;
+			}
+
+			//Cập nhật lại giao diện
+			UpdateUIFromData();
 			/*if (button != clickedControlButton)
 			{
 				//Đóng giao diện cũ trước khi nhấn nút
