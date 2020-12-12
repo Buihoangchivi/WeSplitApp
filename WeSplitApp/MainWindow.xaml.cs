@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,9 +11,11 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
 
 namespace WeSplitApp
 {
@@ -32,7 +35,7 @@ namespace WeSplitApp
 		private List<string> StageList;
 
 		private bool isMinimizeMenu;
-		private int FoodperPage = 12;           //Số chuyến đi mỗi trang
+		private int TripPerPage = 12;           //Số chuyến đi mỗi trang
 		private int _totalPage = 0;             //Tổng số trang
 		public int TotalPage
 		{
@@ -109,10 +112,24 @@ namespace WeSplitApp
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
+			//Đọc dữ liệu các món ăn từ data
+			XmlSerializer xsFood = new XmlSerializer(typeof(List<Trip>));
+			try
+			{
+				using (var reader = new StreamReader(@"Data\Trip.xml"))
+				{
+					TripInfoList = (List<Trip>)xsFood.Deserialize(reader);
+				}
+			}
+			catch
+			{
+				TripInfoList = new List<Trip>();
+			}
+
 			TripOnScreen = TripInfoList;
 
 			//Khởi tạo phân trang
-			TotalPage = (TripInfoList.Count - 1) / FoodperPage + 1;
+			TotalPage = (TripInfoList.Count - 1) / TripPerPage + 1;
 			TotalItem = TripInfoList.Count.ToString();
 			if (TripInfoList.Count > 1)
 			{
@@ -123,6 +140,56 @@ namespace WeSplitApp
 				TotalItem += " item";
 			}
 			UpdatePageButtonStatus();
+
+			//TripInfoList = new List<Trip>
+			//{
+			//	new Trip
+			//	{
+			//		TripName = "abc",
+			//		Location = "Quang Nam",
+			//		Stage = 2,
+			//		PrimaryImagePath = "Images\\1.jpg",
+			//		IsFavorite = true,
+			//		ImagesList = new List<string> { "Images\\2.jpg", "Images\\3.jpg" },
+			//		MembersList = new List<Member>
+			//		{
+			//			new Member
+			//			{
+			//				MemberName = "Bui Van Vi",
+			//				CostsList = new List<Cost>
+			//				{
+			//					new Cost
+			//					{
+			//						PaymentName = "Com D2",
+			//						Charge = 20000
+			//					},
+			//					new Cost
+			//					{
+			//						PaymentName = "Sua chua nha dam",
+			//						Charge = 7000
+			//					}
+			//				}
+			//			},
+			//			new Member
+			//			{
+			//				MemberName = "Pham Tan",
+			//				CostsList = new List<Cost>
+			//				{
+			//					new Cost
+			//					{
+			//						PaymentName = "Pho B5",
+			//						Charge = 22000
+			//					},
+			//					new Cost
+			//					{
+			//						PaymentName = "Sua chua Long Thanh",
+			//						Charge = 6000
+			//					}
+			//				}
+			//			}
+			//		}
+			//	}
+			//};
 
 			this.DataContext = this;
 			
@@ -142,14 +209,22 @@ namespace WeSplitApp
 			{
 				"Bắt đầu", "Đang đi", "Đến nơi", "Đang về", "Kết thúc"
 			};
+
+			//Mặc định khi mở ứng dụng thị hiển thị menu ở dạng mở rộng
+			isMinimizeMenu = false;
+
+			//Lấy danh sách food
+			var trips = TripOnScreen.Take(TripPerPage);
+			TripButtonItemsControl.ItemsSource = trips;
+			view = (CollectionView)CollectionViewSource.GetDefaultView(TripInfoList);
+			TripListAppearAnimation();
+
+			SaveListFood();
 		}
 
 		public MainWindow()
 		{
 			InitializeComponent();
-
-			isMinimizeMenu = false;
-			
 		}
 
 		//---------------------------------------- Các hàm xử lý cập nhật giao diện --------------------------------------------//
@@ -192,6 +267,34 @@ namespace WeSplitApp
 				LastPageButton.IsEnabled = true;
 				LastPageTextBlock.Foreground = Brushes.White;
 			}
+		}
+
+
+
+
+		//---------------------------------------- Các hàm lưu trữ dữ liệu --------------------------------------------//
+
+		//Lưu lại danh sách món ăn
+		private void SaveListFood()
+		{
+			XmlSerializer xs = new XmlSerializer(typeof(List<Trip>));
+			TextWriter writer = new StreamWriter(@"Data\Trip.xml");
+			xs.Serialize(writer, TripInfoList);
+			writer.Close();
+		}
+
+
+
+		//---------------------------------------- Các hàm xử lý khác --------------------------------------------//
+
+		private void TripListAppearAnimation()
+		{
+			ThicknessAnimation animation = new ThicknessAnimation();
+			animation.AccelerationRatio = 0.9;
+			animation.From = new Thickness(15, 60, 0, 0);
+			animation.To = new Thickness(15, 6, 0, 0);
+			animation.Duration = TimeSpan.FromSeconds(0.5);
+			TripListGrid.BeginAnimation(Grid.MarginProperty, animation);
 		}
 	}
 }
