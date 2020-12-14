@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using LiveCharts;
+using LiveCharts.Wpf;
 
 public class Trip : INotifyPropertyChanged
 {
@@ -25,8 +27,10 @@ public class Trip : INotifyPropertyChanged
 					PropertyChanged(this, new PropertyChangedEventArgs("ImagePath"));
 				}
 			}
-		}
+		}	
 	}
+
+
 	private string tripName;
 	private string location;
 	private List<TripImage> imagesList;

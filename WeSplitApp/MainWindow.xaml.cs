@@ -33,6 +33,26 @@ namespace WeSplitApp
 			var c = new Trip.TripImage();
 			c.ImagePath = "/Images/about.png";
 			b.Add(c);
+			c.ImagePath = "/Images/about.png";
+			b.Add(c);
+			c.ImagePath = "/Images/about.png";
+			b.Add(c);
+			c.ImagePath = "/Images/about.png";
+			b.Add(c);
+			c.ImagePath = "/Images/about.png";
+			b.Add(c);
+			c.ImagePath = "/Images/about.png";
+			b.Add(c);
+			c.ImagePath = "/Images/about.png";
+			b.Add(c);
+			c.ImagePath = "/Images/about.png";
+			b.Add(c);
+			c.ImagePath = "/Images/about.png";
+			b.Add(c);
+			c.ImagePath = "/Images/about.png";
+			b.Add(c);
+			c.ImagePath = "/Images/about.png";
+			b.Add(c);
 			a.ImagesList = b;
 			var d = new List<Member>();
 			var e = new Member();
@@ -71,5 +91,27 @@ namespace WeSplitApp
 			a.TripName = "Chơi Sài Gòn";
 			DetailTripGrid.DataContext = a;
 		}
-	}
+
+		private void PieChart_Loaded(object sender, RoutedEventArgs e)
+		{
+			abc.Series = new SeriesCollection  {
+				new PieSeries{
+			Values = new ChartValues<decimal> { 9 },
+			Title = "1"
+			},
+			new PieSeries{
+			Values = new ChartValues<decimal> { 1 },
+			Title = "2"
+			},
+			new PieSeries{
+			Values = new ChartValues<decimal> { 1 },
+			Title = "3"
+			},
+			new PieSeries{
+			Values = new ChartValues<decimal> { 3 },
+			Title = "4"
+			}
+		};
+		}
+    }
 }

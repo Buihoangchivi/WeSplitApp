@@ -587,8 +587,9 @@
                 </DockPanel>
                 <!--Danh sách hình ảnh của chuyến đi-->
                 <DockPanel LastChildFill="True" Grid.Column="1" Margin="5">
-                    <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" Text="Hình ảnh chuyến đi"/>
-                    <ListView ItemsSource="{Binding ImagesList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" BorderThickness="3">
+                    <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="15" FontWeight="Bold" Text="Hình ảnh chuyến đi"/>
+                    <ListView ItemsSource="{Binding ImagesList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                              BorderThickness="3" HorizontalAlignment="Center" VerticalContentAlignment="Center">
                         <ListView.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <WrapPanel/>
@@ -596,7 +597,10 @@
                         </ListView.ItemsPanel>
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <Image Source="{Binding ImagePath, Converter={StaticResource converter}}" Margin="5" Width="50" Height="50" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased"/>
+                                <Border CornerRadius="5" Background="Red">
+                                    <Image Source="{Binding ImagePath, Converter={StaticResource converter}}" Margin="5" Width="80" Height="80"
+                                       RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased"/>
+                                </Border>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
@@ -609,6 +613,9 @@
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
 
+                <lvc:PieChart LegendLocation="Bottom" Loaded="PieChart_Loaded" Name="abc"
+                      Hoverable="False" DataTooltip="{x:Null}">
+                </lvc:PieChart>
 
             </Grid>
         </Grid>
