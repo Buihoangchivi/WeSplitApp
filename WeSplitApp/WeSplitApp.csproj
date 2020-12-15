@@ -73,6 +73,7 @@
     <Compile Include="Model\Cost.cs" />
     <Compile Include="Model\Member.cs" />
     <Compile Include="Model\Trip.cs" />
+    <Compile Include="Model\TripImage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

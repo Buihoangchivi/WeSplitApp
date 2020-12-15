@@ -25,7 +25,6 @@
             <RowDefinition Height="35"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="28"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250" x:Name="col0"/>
@@ -117,7 +116,7 @@
         </DockPanel>
 
         <!--Menu Control-->
-        <StackPanel x:Name="ControlStackPanel" Grid.Row="1" Grid.RowSpan="3"
+        <StackPanel x:Name="ControlStackPanel" Grid.Row="1" Grid.RowSpan="2"
                     Grid.Column="0" Background="#FFDDDDDD" Width="250">
 
             <Button Height="45" Name="MenuButton" Click="MenuButton_Click" BorderThickness="0" 
@@ -173,33 +172,6 @@
                     <TextBlock Width="5" Height="45" Background="{Binding ColorScheme}"></TextBlock>
                     <Image Source="Images/homeImage.png" Width="20" Margin="10,0" RenderOptions.BitmapScalingMode="HighQuality"></Image>
                     <TextBlock VerticalAlignment="Center" Width="153" FontSize="15" Foreground="{Binding ColorScheme}">Home</TextBlock>
-                </WrapPanel>
-            </Button>
-            <Button Height="45" Name="FavoriteButton" Click="ChangeClickedControlButton_Click"
-                    BorderThickness="0" HorizontalContentAlignment="Left">
-                <Button.Style>
-                    <Style TargetType="{x:Type Button}">
-                        <Setter Property="Background" Value="#FFDDDDDD"/>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type Button}">
-                                    <Border Background="{TemplateBinding Background}">
-                                        <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#FFC8C4C4"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-                <WrapPanel>
-                    <TextBlock Width="5" Height="45"/>
-                    <Image Source="Images/favoriteImage.png" Width="20" Margin="10,0" RenderOptions.BitmapScalingMode="HighQuality"></Image>
-                    <TextBlock VerticalAlignment="Center" Width="153" FontSize="15">Favorite</TextBlock>
                 </WrapPanel>
             </Button>
             <Button Height="45" Name="AddTripButton" Click="ChangeClickedControlButton_Click"
@@ -285,73 +257,6 @@
                     <TextBlock Name="AboutTitleTextBlock" VerticalAlignment="Center" Width="153" FontSize="15">About</TextBlock>
                 </WrapPanel>
             </Button>
-        </StackPanel>
-
-        <!--Nút phân trang-->
-        <StackPanel x:Name="PaginationBar" Grid.Row="3" Grid.Column="1"
-                    HorizontalAlignment="Right" Orientation="Horizontal" >
-
-            <!--Tổng số món ăn theo filter hiện tại-->
-            <TextBlock Text="{Binding TotalItem}" FontSize="18" Margin="0,0,10,4"></TextBlock>
-
-            <!--Nút quay về trang đầu-->
-            <Button Name="FirstPageButton" 
-                    Background="{Binding ColorScheme}" BorderThickness="1" Margin="0,0,5,5">
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="10"/>
-                    </Style>
-                </Button.Resources>
-                <WrapPanel Margin="10,0,10,2.5">
-                    <!--<Image Source="Images/firstPage.png" RenderOptions.BitmapScalingMode="HighQuality"></Image>-->
-                    <TextBlock Name="FirstPageTextBlock" FontSize="13">First Page</TextBlock>
-                </WrapPanel>
-            </Button>
-
-            <!--Nút quay về trang trước-->
-            <Button Name="PreviousPageButton"
-                    Background="{Binding ColorScheme}" BorderThickness="1" Margin="0,0,10,5">
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="10"/>
-                    </Style>
-                </Button.Resources>
-                <WrapPanel Margin="10,0,10,2.5">
-                    <!--<Image Name="PreviousPageTextBlock" Source="Images/previous.png" RenderOptions.BitmapScalingMode="HighQuality"></Image>-->
-                    <TextBlock Name="PreviousPageTextBlock" FontSize="13">Prev</TextBlock>
-                </WrapPanel>
-            </Button>
-
-            <TextBlock Text="{Binding CurrentPage}" FontSize="18"></TextBlock>
-            <TextBlock FontSize="18" Text=" of "></TextBlock>
-            <TextBlock Text="{Binding TotalPage}" FontSize="18" Margin="0,0,10,0"></TextBlock>
-
-            <!--Nút nhảy tới trang sau-->
-            <Button Name="NextPageButton" 
-                    Background="{Binding ColorScheme}" BorderThickness="1" Margin="0,0,5,5">
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="10"/>
-                    </Style>
-                </Button.Resources>
-                <WrapPanel Margin="10,0,10,2.5">
-                    <TextBlock Name="NextPageTextBlock" FontSize="13" Foreground="White">Next</TextBlock>
-                </WrapPanel>
-            </Button>
-
-            <!--Nút nhảy tới trang cuối-->
-            <Button Name="LastPageButton"  VerticalContentAlignment="Center"
-                    Background="{Binding ColorScheme}" BorderThickness="1" Margin="0,0,20,5">
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="10"/>
-                    </Style>
-                </Button.Resources>
-                <WrapPanel Margin="10,0,10,2.5">
-                    <TextBlock Name="LastPageTextBlock" FontSize="13" Foreground="White">Last Page</TextBlock>
-                </WrapPanel>
-            </Button>
-
         </StackPanel>
 
         <!--Thanh để lọc loại thức ăn-->
@@ -513,7 +418,7 @@
 
         <!--Hình ảnh và tên các món ăn-->
         <ScrollViewer VerticalScrollBarVisibility="Hidden" Grid.Row="2" Grid.Column="1">
-            <Grid Margin="15,6,0,0" Name="TripListGrid">
+            <Grid Name="TripListGrid">
                 <ItemsControl Grid.Row="1" Name="TripButtonItemsControl">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -523,7 +428,7 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Button Width="204" VerticalContentAlignment="Top" Click="Trip_Click"
-                                    Background="White" Margin="0,0,8,10" BorderThickness="0" >
+                                    Background="White" Margin="0,0,11,10" BorderThickness="0" >
                                 <Button.Resources>
                                     <Style TargetType="Border">
                                         <Setter Property="CornerRadius" Value="10"/>
@@ -538,54 +443,11 @@
 
                                     <Image Source="Images/location.png" Width="18" Height="18" RenderOptions.BitmapScalingMode="HighQuality"/>
 
-                                    <TextBlock Text="{Binding Location}" Width="157" TextAlignment="Left" TextWrapping="Wrap" 
+                                    <TextBlock Text="{Binding Location}" Width="184" TextAlignment="Left" TextWrapping="Wrap" 
                                                FontSize="14" Padding="3,1" MaxHeight="300" Foreground="Gray"></TextBlock>
                                     
-                                    <Button Height="24" VerticalAlignment="Top" BorderThickness="0" Background="White"
-                                            Padding="2.8" Click="Favorite_Click">
-                                        <Button.Resources>
-                                            <Style TargetType="Border">
-                                                <Setter Property="CornerRadius" Value="14"/>
-                                            </Style>
-                                        </Button.Resources>
-                                        <Button.Content>
-                                            <WrapPanel>
-                                                <Image Source="Images/unloved.png" RenderOptions.BitmapScalingMode="HighQuality">
-                                                    <Image.Style>
-                                                        <Style TargetType="Image">
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                            <Style.Triggers>
-                                                                <MultiDataTrigger>
-                                                                    <MultiDataTrigger.Conditions>
-                                                                        <Condition Binding="{Binding IsFavorite}" Value="False" />
-                                                                    </MultiDataTrigger.Conditions>
-                                                                    <Setter Property="Visibility" Value="Visible" />
-                                                                </MultiDataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Image.Style>
-                                                </Image>
-                                                <Image Source="Images/favorite.png" RenderOptions.BitmapScalingMode="HighQuality">
-                                                    <Image.Style>
-                                                        <Style TargetType="Image">
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                            <Style.Triggers>
-                                                                <MultiDataTrigger>
-                                                                    <MultiDataTrigger.Conditions>
-                                                                        <Condition Binding="{Binding IsFavorite}" Value="True" />
-                                                                    </MultiDataTrigger.Conditions>
-                                                                    <Setter Property="Visibility" Value="Visible" />
-                                                                </MultiDataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Image.Style>
-                                                </Image>
-                                            </WrapPanel>
-                                        </Button.Content>
-                                    </Button>
-
                                     <TextBlock Text="{Binding TripName}" TextAlignment="Left" TextWrapping="Wrap" Width="204" 
-                                               FontSize="15" Padding="3,1" MaxHeight="300" FontFamily="Segoe UI Semibold" ></TextBlock>
+                                               FontSize="15" Padding="3,1" MaxHeight="300" FontFamily="Segoe UI Semibold"></TextBlock>
                                 </WrapPanel>
                             </Button>
                         </DataTemplate>

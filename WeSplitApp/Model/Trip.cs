@@ -9,10 +9,10 @@ public class Trip : INotifyPropertyChanged
 {
 	private string tripName;
 	private string location;
-	private int stage;
+	private string stage;
 	private string primaryImagePath;		//Đường dẫn ảnh chính
 	private bool isFavorite;				//Chuyến đi yêu thích
-	private List<string> imagesList;
+	private BindingList<TripImage> imagesList;
 	private List<Member> membersList;
 
 	public string TripName
@@ -39,7 +39,7 @@ public class Trip : INotifyPropertyChanged
 			OnPropertyChanged("Location");
 		}
 	}
-	public int Stage
+	public string Stage
 	{
 		get
 		{
@@ -81,7 +81,7 @@ public class Trip : INotifyPropertyChanged
 			}
 		}
 	}
-	public List<string> ImagesList
+	public BindingList<TripImage> ImagesList
 	{
 		get
 		{
