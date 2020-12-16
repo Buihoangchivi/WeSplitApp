@@ -261,7 +261,7 @@
         </StackPanel>
 
         <!--Thanh để lọc loại thức ăn-->
-        <DockPanel Name="TypeBarDockPanel" Height="40" Margin="15,0" Grid.Row="1" Grid.Column="1">
+        <DockPanel Name="TypeBarDockPanel" Height="40" Margin="15,0" Grid.Row="1" Grid.Column="1" Visibility="Collapsed">
             <StackPanel Orientation="Horizontal" Width="590" DockPanel.Dock="Left">
                 <Button Height="40" Width="130" x:Name="AllButton" Click="ChangeClickedTypeButton_Click"
                         BorderThickness="0" Content="All" FontSize="15" Foreground="Gray">
@@ -418,7 +418,7 @@
         </DockPanel>
 
         <!--Hình ảnh và tên các món ăn-->
-        <ScrollViewer VerticalScrollBarVisibility="Hidden" Grid.Row="2" Grid.Column="1">
+        <ScrollViewer VerticalScrollBarVisibility="Hidden" Grid.Row="2" Grid.Column="1" Visibility="Collapsed">
             <Grid Name="TripListGrid">
                 <ItemsControl Grid.Row="1" Name="TripButtonItemsControl">
                     <ItemsControl.ItemsPanel>
@@ -458,97 +458,136 @@
         </ScrollViewer>
 
         <!--Chi tiết chuyến đi-->
-        <Grid Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Name="DetailTripGrid" Visibility="Collapsed">
+        <Grid Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Name="DetailTripGrid">
             <Grid.RowDefinitions>
-                <RowDefinition Height="2*"/>
-                <RowDefinition Height="4*"/>
-                <RowDefinition Height="4*"/>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="5*"/>
             </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="8*"/>
+                <ColumnDefinition Width="4*"/>
+                <ColumnDefinition Width="8*"/>
+                <ColumnDefinition Width="4*"/>
+                <ColumnDefinition Width="3.5*"/>
+            </Grid.ColumnDefinitions>
             <!--Tiêu đề và thao tác với chuyến đi-->
-            <DockPanel Grid.Row="0" VerticalAlignment="Center" LastChildFill="True">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right">
-                    <Button Background="White" BorderThickness="0"  Height="35" VerticalAlignment="Top">
-                        <WrapPanel>
-                            <Image Source="Images/editImage.png" Width="20" Margin="0,0,7,0" 
+            <TextBlock FontSize="20" Text="CHI TIẾT CHUYẾN ĐI" VerticalAlignment="Center" HorizontalAlignment="Center"
+                       Foreground="{Binding ColorScheme}" FontWeight="ExtraBold" FontStyle="Oblique"/>
+
+            <Grid Grid.Column="1" Grid.ColumnSpan="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="5*"/>
+                </Grid.RowDefinitions>
+                <TextBlock FontWeight="Bold" Text="TRẠNG THÁI HIỆN TẠI"
+                           VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16"/>
+                <TextBlock Grid.Row="1" Margin="5 0 0 0" Text="{Binding Stage}"/>
+            </Grid>
+
+            <Grid Grid.Column="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="5*"/>
+                </Grid.RowDefinitions>
+                <Button Background="White" BorderThickness="0"  Height="35" VerticalAlignment="Top">
+                    <WrapPanel>
+                        <Image Source="Images/editImage.png" Width="20" Margin="0,0,7,0" 
                                        RenderOptions.BitmapScalingMode="HighQuality"></Image>
-                            <TextBlock VerticalAlignment="Center" FontSize="12">Edit</TextBlock>
-                        </WrapPanel>
-                    </Button>
-                    <Button Background="White" BorderThickness="0" 
-                                 Height="35" VerticalAlignment="Top">
-                        <WrapPanel Margin="15,0">
-                            <Image Source="Images/deleteRecipe.png" Width="22" Margin="0,0,4,0" 
+                        <TextBlock VerticalAlignment="Center" FontSize="12">Edit</TextBlock>
+                    </WrapPanel>
+                </Button>
+                <Button Grid.Row="1" Background="White" BorderThickness="0" 
+                        Height="35" VerticalAlignment="Top">
+                    <WrapPanel Margin="15,0">
+                        <Image Source="Images/deleteRecipe.png" Width="22" Margin="0,0,4,0" 
                                        RenderOptions.BitmapScalingMode="HighQuality"></Image>
-                            <TextBlock VerticalAlignment="Center" FontSize="12">Delete</TextBlock>
-                        </WrapPanel>
-                    </Button>
-                </StackPanel>
-                <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <TextBlock FontSize="20" Text="CHI TIẾT CHUYẾN ĐI" Foreground="{Binding ColorScheme}" FontWeight="ExtraBold" FontStyle="Oblique"/>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <TextBlock FontStyle="Italic" Text="Trạng thái hiện tại:"/>
-                        <TextBlock Margin="5 0 0 0" Text="{Binding Stage}"/>
-                    </StackPanel>
-                </StackPanel>
-            </DockPanel>
-            <Grid Grid.Row="1">
+                        <TextBlock VerticalAlignment="Center" FontSize="12">Delete</TextBlock>
+                    </WrapPanel>
+                </Button>
+            </Grid>
+
+            <!--Thông tin cơ bản chuyến đi-->
+            <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="260"/>
+                    <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <!--Thông tin cơ bản chuyến đi-->
-                <DockPanel Grid.Column="0" LastChildFill="True" Margin="5">
-                    <TextBlock DockPanel.Dock="Top" Text="Thông tin cơ bản" HorizontalAlignment="Center" FontSize="15" FontWeight="Bold" Foreground="{Binding ColorScheme}"/>
-                    <TextBlock DockPanel.Dock="Top" Text="{Binding TripName}" HorizontalAlignment="Center"/>
-                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Image Source="Images/location.png" Width="10" Height="10" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased"/>
-                        <TextBlock Text="{Binding Location}"/>
+                
+                <TextBlock Grid.ColumnSpan="2" Text="Thông tin cơ bản" HorizontalAlignment="Center"
+                           FontSize="18" FontWeight="Bold" Foreground="{Binding ColorScheme}"/>
+
+                <Rectangle Grid.Row="1" RadiusX="10" RadiusY="10" Width="260" Height="180" VerticalAlignment="Top">
+                    <Rectangle.Fill>
+                        <ImageBrush ImageSource="{Binding PrimaryImagePath, Converter={StaticResource converter}}" 
+                                       Stretch="UniformToFill"
+                                       RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased"/>
+                    </Rectangle.Fill>
+                </Rectangle>
+
+                <DockPanel Grid.Row="1" Grid.Column="1" LastChildFill="True" Margin="5,0,0,0">
+
+                    <TextBlock DockPanel.Dock="Top" Text="{Binding TripName}" TextWrapping="Wrap"
+                               FontWeight="Bold" Margin="5,0,0,5" FontSize="14"/>
+
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,5">
+                        <Image Source="Images/location.png" Width="18" Height="18" 
+                               RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased"/>
+                        <TextBlock Text="{Binding Location}" FontWeight="DemiBold" TextWrapping="Wrap" FontSize="14"/>
                     </StackPanel>
-                    <DockPanel DockPanel.Dock="Right" LastChildFill="True">
-                        <TextBlock DockPanel.Dock="Top" Text="Các thành viên:"/>
-                        <ListView ItemsSource="{Binding MembersList}" Width="100" BorderThickness="0" ScrollViewer.CanContentScroll="False" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                    
+                    <DockPanel LastChildFill="True">
+                        <TextBlock DockPanel.Dock="Top" Text="Các thành viên:" FontSize="14" Margin="5,0,0,0"/>
+                        <ListView ItemsSource="{Binding MembersList}" BorderThickness="0" 
+                                  ScrollViewer.CanContentScroll="False" ScrollViewer.VerticalScrollBarVisibility="Hidden">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding MemberName}"/>
+                                    <TextBlock Text="{Binding MemberName}" FontSize="14"/>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
                     </DockPanel>
-                    <Image Source="{Binding PrimaryImagePath, Converter={StaticResource converter}}" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased"></Image>
+
                 </DockPanel>
-                <!--Danh sách hình ảnh của chuyến đi-->
-                <DockPanel LastChildFill="True" Grid.Column="1" Margin="5">
-                    <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="15" FontWeight="Bold" Text="Hình ảnh chuyến đi"/>
-                    <ListView ItemsSource="{Binding ImagesList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                              BorderThickness="3" HorizontalAlignment="Center" VerticalContentAlignment="Center">
-                        <ListView.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel/>
-                            </ItemsPanelTemplate>
-                        </ListView.ItemsPanel>
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <Border CornerRadius="5" Background="Red">
-                                    <Image Source="{Binding ImagePath, Converter={StaticResource converter}}" Margin="5" Width="80" Height="80"
+                
+            </Grid>
+
+            <!--Danh sách hình ảnh của chuyến đi-->
+            <Grid Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="3" Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                
+                <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="18" 
+                           FontWeight="Bold" Text="Hình ảnh chuyến đi"/>
+                
+                <ListView Grid.Row="1" ItemsSource="{Binding ImagesList}" 
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                          ScrollViewer.VerticalScrollBarVisibility="Hidden" BorderThickness="0">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Rectangle RadiusX="10" RadiusY="10" Width="114" Height="85">
+                                <Rectangle.Fill>
+                                    <ImageBrush ImageSource="{Binding ImagePath, Converter={StaticResource converter}}" 
+                                       Stretch="UniformToFill"
                                        RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased"/>
-                                </Border>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </DockPanel>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </Grid>
-            <Grid Grid.Row="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="1*"/>
-                </Grid.ColumnDefinitions>
-
-                <lvc:PieChart LegendLocation="Bottom" Name="abc"
-                      Hoverable="False" DataTooltip="{x:Null}">
-                </lvc:PieChart>
-
-            </Grid>
+            
         </Grid>
     </Grid>
 </Window>
