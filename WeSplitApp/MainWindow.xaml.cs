@@ -120,20 +120,21 @@ namespace WeSplitApp
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
 			//Đọc dữ liệu các món ăn từ data
-			XmlSerializer xsFood = new XmlSerializer(typeof(List<Trip>));
-			try
-			{
-				using (var reader = new StreamReader(@"Data\Trip.xml"))
-				{
-					TripInfoList = (List<Trip>)xsFood.Deserialize(reader);
-				}
-			}
-			catch
-			{
-				TripInfoList = new List<Trip>();
-			}
-			DetailTripGrid.DataContext = TripInfoList[0];
-			/*TripOnScreen = TripInfoList;
+			//XmlSerializer xsFood = new XmlSerializer(typeof(List<Trip>));
+			//try
+			//{
+			//	using (var reader = new StreamReader(@"Data\Trip.xml"))
+			//	{
+			//		TripInfoList = (List<Trip>)xsFood.Deserialize(reader);
+			//	}
+			//}
+			//catch
+			//{
+			//	TripInfoList = new List<Trip>();
+			//}
+
+			//DetailTripGrid.DataContext = TripInfoList[0];
+            /*TripOnScreen = TripInfoList;
 
 			//Khởi tạo phân trang
 			TotalPage = (TripInfoList.Count - 1) / TripPerPage + 1;
@@ -146,57 +147,59 @@ namespace WeSplitApp
 			{
 				TotalItem += " item";
 			}*/
-			//UpdatePageButtonStatus();
+            //UpdatePageButtonStatus();
 
-			//TripInfoList = new List<Trip>
-			//{
-			//	new Trip
-			//	{
-			//		TripName = "abc",
-			//		Location = "Quang Nam",
-			//		Stage = 2,
-			//		PrimaryImagePath = "Images\\1.jpg",
-			//		IsFavorite = true,
-			//		ImagesList = new List<string> { "Images\\2.jpg", "Images\\3.jpg" },
-			//		MembersList = new List<Member>
-			//		{
-			//			new Member
-			//			{
-			//				MemberName = "Bui Van Vi",
-			//				CostsList = new List<Cost>
-			//				{
-			//					new Cost
-			//					{
-			//						PaymentName = "Com D2",
-			//						Charge = 20000
-			//					},
-			//					new Cost
-			//					{
-			//						PaymentName = "Sua chua nha dam",
-			//						Charge = 7000
-			//					}
-			//				}
-			//			},
-			//			new Member
-			//			{
-			//				MemberName = "Pham Tan",
-			//				CostsList = new List<Cost>
-			//				{
-			//					new Cost
-			//					{
-			//						PaymentName = "Pho B5",
-			//						Charge = 22000
-			//					},
-			//					new Cost
-			//					{
-			//						PaymentName = "Sua chua Long Thanh",
-			//						Charge = 6000
-			//					}
-			//				}
-			//			}
-			//		}
-			//	}
-			//};
+            TripInfoList = new List<Trip>
+            {
+                new Trip
+                {
+                    TripName = "abc",
+                    Location = "Quang Nam",
+                    Stage = "abc",
+                    PrimaryImagePath = "Images\\1.jpg",
+                    IsFavorite = true,
+                   // ImagesList = new List<string> { "Images\\2.jpg", "Images\\3.jpg" },
+                    MembersList = new List<Member>
+                    {
+                        new Member
+                        {
+                            MemberName = "Bui Van Vi",
+                            CostsList = new List<Cost>
+                            {
+                                new Cost
+                                {
+                                    PaymentName = "Com D2",
+                                    Charge = 20000
+                                },
+                                new Cost
+                                {
+                                    PaymentName = "Sua chua nha dam",
+                                    Charge = 7000
+                                }
+                            }
+                        },
+                        new Member
+                        {
+                            MemberName = "Pham Tan",
+                            CostsList = new List<Cost>
+                            {
+                                new Cost
+                                {
+                                    PaymentName = "Pho B5",
+                                    Charge = 22000
+                                },
+                                new Cost
+                                {
+                                    PaymentName = "Sua chua Long Thanh",
+                                    Charge = 6000
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+			DetailTripGrid.DataContext = TripInfoList[0];
+
 
 			this.DataContext = this;
 

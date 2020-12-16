@@ -18,6 +18,7 @@
             <TextBlock Foreground ="{Binding ColorScheme}"
              FontWeight="Bold" FontSize="16"/>
         </DataTemplate>
+        <SolidColorBrush x:Key="ColorScheme" Color="{Binding ColorScheme}"></SolidColorBrush>
     </Window.Resources>
 
     <Grid>
@@ -480,7 +481,7 @@
                 </Border.Effect>
 
                 <TextBlock FontSize="20" Text="CHI TIẾT CHUYẾN ĐI" VerticalAlignment="Center" HorizontalAlignment="Center"
-                       Foreground="{Binding ColorScheme}" FontWeight="ExtraBold" FontStyle="Italic"/>
+                       Foreground="{DynamicResource ColorScheme}" FontWeight="ExtraBold" FontStyle="Italic"/>
             </Border>
 
             <!--Trạng thái hiện tại-->
@@ -542,7 +543,7 @@
 
                     <!--Label Thông tin cơ bản-->
                     <TextBlock Grid.ColumnSpan="2" Text="THÔNG TIN CƠ BẢN" HorizontalAlignment="Center"
-                           FontSize="17" FontWeight="Bold" Foreground="{Binding ColorScheme}" VerticalAlignment="Center"/>
+                           FontSize="17" FontWeight="Bold" Foreground="{DynamicResource ColorScheme}" VerticalAlignment="Center"/>
 
                     <Grid Grid.Row="1">
                         <Grid.RowDefinitions>
