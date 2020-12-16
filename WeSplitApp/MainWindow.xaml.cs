@@ -132,7 +132,7 @@ namespace WeSplitApp
 			{
 				TripInfoList = new List<Trip>();
 			}
-
+			DetailTripGrid.DataContext = TripInfoList[0];
 			/*TripOnScreen = TripInfoList;
 
 			//Khởi tạo phân trang
@@ -744,6 +744,13 @@ namespace WeSplitApp
 
 		private void Trip_Click(object sender, RoutedEventArgs e)
 		{
+			//Đóng giao diện màn hình danh sách các chuyến đi
+			TripListGrid.Visibility = Visibility.Collapsed;
+			//Đóng giao diện thanh chọn loại chuyến đi
+			TypeBarDockPanel.Visibility = Visibility.Collapsed;
+
+			//Mở giao diện màn hình chi tiết chuyến đi
+			DetailTripGrid.Visibility = Visibility.Visible;
 			//Đóng giao diện Panel hiện tại
 			/*ProcessPanelVisible(Visibility.Collapsed);
 
