@@ -480,7 +480,7 @@
                     <DropShadowEffect BlurRadius="5" Direction="230" Color="Black" ShadowDepth="8" Opacity="0.2"/>
                 </Border.Effect>
 
-                <TextBlock FontSize="20" Text="CHI TIẾT CHUYẾN ĐI" VerticalAlignment="Center" HorizontalAlignment="Center"
+                <TextBlock FontSize="25" Text="CHI TIẾT CHUYẾN ĐI" VerticalAlignment="Center" HorizontalAlignment="Center"
                        Foreground="{DynamicResource ColorScheme}" FontWeight="ExtraBold" FontStyle="Italic"/>
             </Border>
 
@@ -527,7 +527,7 @@
 
                     <!--Label Thông tin cơ bản-->
                     <TextBlock Grid.ColumnSpan="2" Text="THÔNG TIN CƠ BẢN" HorizontalAlignment="Center"
-                           FontSize="17" FontWeight="Bold" VerticalAlignment="Top"
+                           FontSize="18" FontWeight="Bold" VerticalAlignment="Top"
                                Foreground="{DynamicResource ColorScheme}"/>
 
                     <!--Hình ảnh chính của chuyến đi-->
@@ -543,13 +543,13 @@
                     <StackPanel Grid.Row="2" Orientation="Horizontal">
                         <Image Source="Images/location.png" Width="18" Height="18" Margin="0,6,0,0" 
                                RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased"/>
-                        <TextBlock Text="{Binding Location}" Height="18" 
+                        <TextBlock Text="{Binding Location}" Height="18" Foreground="Gray"
                                    TextWrapping="Wrap" FontSize="14" Margin="0,7,0,0" />
                     </StackPanel>
 
                     <!--Tên chuyến đi-->
                     <TextBlock Grid.Row="3" Text="{Binding TripName}" TextWrapping="Wrap"
-                               FontSize="14" Padding="5,3,0,0" FontFamily="Segoe UI Semibold"/>
+                               FontSize="15" Padding="5,2,0,0" FontFamily="Segoe UI Semibold"/>
 
                     <!--Danh sách thành viên-->
                     <DockPanel Grid.Row="1" Grid.Column="1" LastChildFill="True" Margin="5,0,0,0">
@@ -588,7 +588,7 @@
                         <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="17" 
+                    <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="18" 
                            FontWeight="Bold" Text="HÌNH ẢNH CHUYẾN ĐI" VerticalAlignment="Top"
                                Foreground="{DynamicResource ColorScheme}"/>
 

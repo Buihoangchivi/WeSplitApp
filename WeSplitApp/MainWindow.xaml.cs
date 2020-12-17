@@ -34,7 +34,7 @@ namespace WeSplitApp
 		private BindingList<ColorSetting> ListColor;
 		private Condition FilterCondition = new Condition { Type = "" };
 
-		private bool isMinimizeMenu, isEditMode, CheckFavoriteIsClicked;
+		private bool isMinimizeMenu, isEditMode, IsDetailTrip;
 		/*private int TripPerPage = 12;           //Số chuyến đi mỗi trang
 		private int _totalPage = 0;             //Tổng số trang
 		public int TotalPage
@@ -220,12 +220,11 @@ namespace WeSplitApp
 
 			//Mặc định khi mở ứng dụng thị hiển thị menu ở dạng mở rộng
 			isMinimizeMenu = false;
+			//Mặc định không ở màn hình chi tiết
+			IsDetailTrip = false;
 
 			//Mặc định không ở chế độ chỉnh sửa chuyến đi
 			isEditMode = false;
-
-			//Mặc định chưa nhấn nút yêu thích trong bất kì chuyến đi nào
-			CheckFavoriteIsClicked = false;
 
 			//Lấy danh sách food
 			//var trips = TripOnScreen.Take(TripPerPage);
@@ -514,6 +513,13 @@ namespace WeSplitApp
 			block.Background = Brushes.Transparent;
 			text.Foreground = Brushes.Black;
 
+			if (IsDetailTrip == true)
+			{
+				//Đóng giao diện màn hình chi tiết chuyến đi
+				DetailTripGrid.Visibility = Visibility.Collapsed;
+				IsDetailTrip = false;
+			}
+
 			//Hiển thị màu cho nút vừa được nhấn
 			var button = (Button)sender;
 			wrapPanel = (WrapPanel)button.Content;
@@ -529,6 +535,8 @@ namespace WeSplitApp
 			//Mở giao diện mới sau khi nhấn nút
 			if (button == HomeButton)
 			{
+				TripListGrid.Visibility = Visibility.Visible;
+				TypeBarDockPanel.Visibility = Visibility.Visible;
 			}
 
 			//Cập nhật lại giao diện
@@ -755,6 +763,9 @@ namespace WeSplitApp
 
 			//Lấy chỉ số của hình ảnh món ăn được nhấn
 			DetailTripGrid.DataContext = TripInfoList[GetElementIndexInArray((Button)sender)];
+
+			//Bật chế độ đang ở màn hình chi tiết
+			IsDetailTrip = true;
 			//Đóng giao diện Panel hiện tại
 			/*ProcessPanelVisible(Visibility.Collapsed);
 
