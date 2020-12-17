@@ -32,7 +32,6 @@ namespace WeSplitApp
 		private CollectionView view;
 		//private BindingList<Trip> TripOnScreen;						//Danh sách chuyến đi để hiện trên màn hình
 		private BindingList<ColorSetting> ListColor;
-		private BindingList<string> StageList;
 		private Condition FilterCondition = new Condition { Type = "" };
 
 		private bool isMinimizeMenu, isEditMode, CheckFavoriteIsClicked;
@@ -133,8 +132,6 @@ namespace WeSplitApp
             {
                 TripInfoList = new List<Trip>();
             }
-
-            DetailTripGrid.DataContext = TripInfoList[0];
             /*TripOnScreen = TripInfoList;
 
 			//Khởi tạo phân trang
@@ -492,11 +489,11 @@ namespace WeSplitApp
 			}
 			else if (button == ProcessingButton)
 			{
-				FilterCondition.Type = "Processing";
+				FilterCondition.Type = "Đang đi";
 			}
 			else if (button == AccomplishedButton)
 			{
-				FilterCondition.Type = "Accomplished";
+				FilterCondition.Type = "Đã hoàn thành";
 			}
 			else
 			{
@@ -755,6 +752,9 @@ namespace WeSplitApp
 
 			//Mở giao diện màn hình chi tiết chuyến đi
 			DetailTripGrid.Visibility = Visibility.Visible;
+
+			//Lấy chỉ số của hình ảnh món ăn được nhấn
+			DetailTripGrid.DataContext = TripInfoList[GetElementIndexInArray((Button)sender)];
 			//Đóng giao diện Panel hiện tại
 			/*ProcessPanelVisible(Visibility.Collapsed);
 
