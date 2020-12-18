@@ -118,7 +118,7 @@
         </DockPanel>
 
         <!--Menu Control-->
-        <StackPanel x:Name="ControlStackPanel" Grid.Row="1" Grid.RowSpan="2"
+        <StackPanel x:Name="ControlStackPanel" Grid.Row="1" Grid.RowSpan="2" Visibility="Visible"
                     Grid.Column="0" Background="#FFDDDDDD" Width="250">
 
             <Button Height="45" Name="MenuButton" Click="MenuButton_Click" BorderThickness="0" 
@@ -262,7 +262,7 @@
         </StackPanel>
 
         <!--Thanh để lọc loại thức ăn-->
-        <DockPanel Name="TypeBarDockPanel" Height="40" Margin="15,0" Grid.Row="1" Grid.Column="1">
+        <DockPanel Name="TypeBarDockPanel" Height="40" Margin="15,0" Grid.Row="1" Grid.Column="1" Visibility="Visible">
             <StackPanel Orientation="Horizontal" Width="590" DockPanel.Dock="Left">
                 <Button Height="40" Width="130" x:Name="AllButton" Click="ChangeClickedTypeButton_Click"
                         BorderThickness="0" Content="All" FontSize="15" Foreground="Gray">
@@ -419,7 +419,7 @@
         </DockPanel>
 
         <!--Hình ảnh và tên các món ăn-->
-        <ScrollViewer VerticalScrollBarVisibility="Hidden" Grid.Row="2" Grid.Column="1">
+        <ScrollViewer VerticalScrollBarVisibility="Hidden" Grid.Row="2" Grid.Column="1" Visibility="Visible">
             <Grid Name="TripListGrid">
                 <ItemsControl Grid.Row="1" Name="TripButtonItemsControl">
                     <ItemsControl.ItemsPanel>
@@ -611,6 +611,77 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
+                </Grid>
+
+            </Border>
+
+            <!--Biểu đồ hình tròn thể hiện số tiền chi của từng thành viên-->
+            <Border Grid.Row="2" Background="Gainsboro" 
+                    CornerRadius="10" Margin="10,10,0,10">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="5" Direction="230" Color="Black" ShadowDepth="8" Opacity="0.2"/>
+                </Border.Effect>
+
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="18" 
+                           FontWeight="Bold" Text="BIỂU ĐỒ CHI TRẢ" VerticalAlignment="Top"
+                               Foreground="{DynamicResource ColorScheme}"/>
+
+                    <lvc:PieChart Grid.Row="1" LegendLocation="Bottom" Name="ChargePie"
+                              IsVisibleChanged="ChargePie_IsVisibleChanged" Hoverable="True">
+                    </lvc:PieChart>
+
+                </Grid>
+
+            </Border>
+
+            <!--Biểu đồ hình cột thể hiện các khoản chi-->
+            <Border Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
+                    Background="Gainsboro" CornerRadius="10" Margin="10,10,0,10">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="5" Direction="230" Color="Black" ShadowDepth="8" Opacity="0.2"/>
+                </Border.Effect>
+
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="18" 
+                           FontWeight="Bold" Text="BIỂU ĐỒ KHOẢN CHI" VerticalAlignment="Top"
+                               Foreground="{DynamicResource ColorScheme}"/>
+
+                    
+
+                </Grid>
+
+            </Border>
+
+            <!--Tổng kết số tiền thu chi, nhận thêm và trả lại cho từng thành viên-->
+            <Border Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2"
+                    Background="Gainsboro" CornerRadius="10" Margin="10,10,0,10">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="5" Direction="230" Color="Black" ShadowDepth="8" Opacity="0.2"/>
+                </Border.Effect>
+
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="18" 
+                           FontWeight="Bold" Text="TỔNG KẾT CHUYẾN ĐI" VerticalAlignment="Top"
+                               Foreground="{DynamicResource ColorScheme}"/>
+
+                    
+
                 </Grid>
 
             </Border>

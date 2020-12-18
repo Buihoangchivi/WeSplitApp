@@ -16,6 +16,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Serialization;
+using LiveCharts;
+using LiveCharts.Wpf;
 using Microsoft.Win32;
 
 namespace WeSplitApp
@@ -35,7 +37,7 @@ namespace WeSplitApp
 		private BindingList<ColorSetting> ListColor;
 		private Condition FilterCondition = new Condition { Type = "" };
 		public Trip trip = new Trip();
-		private bool isMinimizeMenu, isEditMode = true, IsDetailTrip;
+		private bool isMinimizeMenu, isEditMode, IsDetailTrip;
 		int selectedTripIndex = 0;
 		/*private int TripPerPage = 12;           //Số chuyến đi mỗi trang
 		private int _totalPage = 0;             //Tổng số trang
@@ -226,7 +228,7 @@ namespace WeSplitApp
 			IsDetailTrip = false;
 
 			//Mặc định không ở chế độ chỉnh sửa chuyến đi
-			isEditMode = true;
+			isEditMode = false;
 			
 			TripButtonItemsControl.ItemsSource = TripInfoList;
 			view = (CollectionView)CollectionViewSource.GetDefaultView(TripInfoList);
@@ -467,11 +469,7 @@ namespace WeSplitApp
 				AddTripGrid.Visibility = Visibility.Visible;
 				TypeBarDockPanel.Visibility = Visibility.Collapsed;
 				ControlStackPanel.Visibility = Visibility.Collapsed;
-				if (isEditMode == true)
-				{
-					trip = TripInfoList[selectedTripIndex];
-				}
-				else
+				if (isEditMode == false)
 				{
 					trip = new Trip();
 				}
@@ -853,12 +851,13 @@ namespace WeSplitApp
 			//Đóng giao diện thanh chọn loại chuyến đi
 			TypeBarDockPanel.Visibility = Visibility.Collapsed;
 
-			//Mở giao diện màn hình chi tiết chuyến đi
-			DetailTripGrid.Visibility = Visibility.Visible;
-
 			//Lấy chỉ số của hình ảnh món ăn được nhấn
 			selectedTripIndex = GetElementIndexInArray((Button)sender);
 			DetailTripGrid.DataContext = TripInfoList[selectedTripIndex];
+			trip = new Trip(TripInfoList[selectedTripIndex]);
+
+			//Mở giao diện màn hình chi tiết chuyến đi
+			DetailTripGrid.Visibility = Visibility.Visible;
 
 			//Bật chế độ đang ở màn hình chi tiết
 			IsDetailTrip = true;
@@ -944,6 +943,39 @@ namespace WeSplitApp
 			animation.To = new Thickness(15, 6, 0, 0);
 			animation.Duration = TimeSpan.FromSeconds(0.5);
 			TripListGrid.BeginAnimation(Grid.MarginProperty, animation);
+		}
+
+		private void ChargePie_Loaded(object sender, RoutedEventArgs e)
+		{
+			ChargePie.Series = new SeriesCollection();
+			var tooltip = (DefaultTooltip)ChargePie.DataTooltip;
+			((DefaultTooltip)ChargePie.DataTooltip).SelectionMode = TooltipSelectionMode.OnlySender;
+			foreach (var member in trip.MembersList)
+			{
+				ChargePie.Series.Add(
+						new PieSeries()
+						{
+							Values = new ChartValues<decimal> { member.CostsList.Sum(value => value.Charge) },
+							Title = member.MemberName,
+						}
+					); ;
+			}
+		}
+
+		private void ChargePie_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+		{
+			ChargePie.Series = new SeriesCollection();
+			((DefaultTooltip)ChargePie.DataTooltip).SelectionMode = TooltipSelectionMode.OnlySender;
+			foreach (var member in trip.MembersList)
+			{
+				ChargePie.Series.Add(
+						new PieSeries()
+						{
+							Values = new ChartValues<decimal> { member.CostsList.Sum(value => value.Charge) },
+							Title = member.MemberName,
+						}
+					); ;
+			}
 		}
 	}
 }
