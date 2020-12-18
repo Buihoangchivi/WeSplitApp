@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -999,6 +1000,156 @@ namespace WeSplitApp
 			var member = ((TextBlock)sender).DataContext as Member;
 			float res = member.Deposits - averageCharge;
 			((TextBlock)sender).Text = res.ToString();
+		}
+
+
+		/*tim kiem*/
+		private string ConvertToUnSign(string input)
+		{
+			input = input.Trim();
+			for (int i = 0x20; i < 0x30; i++)
+			{
+				input = input.Replace(((char)i).ToString(), " ");
+			}
+			Regex regex = new Regex(@"\p{IsCombiningDiacriticalMarks}+");
+			string str = input.Normalize(NormalizationForm.FormD);
+			string str2 = regex.Replace(str, string.Empty).Replace('đ', 'd').Replace('Đ', 'D');
+			while (str2.IndexOf("?") >= 0)
+			{
+				str2 = str2.Remove(str2.IndexOf("?"), 1);
+			}
+			return str2;
+		}
+
+		private void searchTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+		{
+			if (e.Text != "\u001b")  //khác escapes
+			{
+				searchComboBox.IsDropDownOpen = true;
+			}
+			if (SearchFilter.IsChecked == false)
+			{
+				if (!string.IsNullOrEmpty(searchTextBox.Text))
+				{
+					string fullText = ConvertToUnSign(searchTextBox.Text.Insert(searchTextBox.CaretIndex, (e.Text)));
+					searchComboBox.ItemsSource = TripInfoList.Where(s => ConvertToUnSign(s.Location).IndexOf(fullText, StringComparison.InvariantCultureIgnoreCase) != -1).ToList();
+					if (searchComboBox.Items.Count == 0)
+					{
+						SearchNotificationComboBox.IsDropDownOpen = true;
+						searchComboBox.IsDropDownOpen = false;
+					}
+				}
+				else if (!string.IsNullOrEmpty(e.Text))
+				{
+					searchComboBox.ItemsSource = TripInfoList.Where(s => ConvertToUnSign(s.Location).IndexOf(ConvertToUnSign(e.Text), StringComparison.InvariantCultureIgnoreCase) != -1).ToList();
+				}
+				else
+				{
+					searchComboBox.ItemsSource = TripInfoList;
+				}
+			}
+            else
+            {
+				if (!string.IsNullOrEmpty(searchTextBox.Text))
+				{
+					string fullText = ConvertToUnSign(searchTextBox.Text.Insert(searchTextBox.CaretIndex, (e.Text)));
+					searchComboBox.ItemsSource = TripInfoList.Where(s => s.MembersList.Any(p => ConvertToUnSign(p.MemberName).IndexOf(fullText, StringComparison.InvariantCultureIgnoreCase) != -1)).ToList();
+					if (searchComboBox.Items.Count == 0)
+					{
+						SearchNotificationComboBox.IsDropDownOpen = true;
+						searchComboBox.IsDropDownOpen = false;
+					}
+				}
+				else if (!string.IsNullOrEmpty(e.Text))
+				{
+					searchComboBox.ItemsSource = TripInfoList.Where(s => s.MembersList.Any(p => ConvertToUnSign(p.MemberName).IndexOf(ConvertToUnSign(e.Text), StringComparison.InvariantCultureIgnoreCase) != -1)).ToList();
+				}
+				else
+				{
+					searchComboBox.ItemsSource = TripInfoList;
+				}
+			}
+		}
+
+		private void PreviewKeyUp_EnhanceTextBoxSearch(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Back || e.Key == Key.Delete)
+			{
+
+
+				searchComboBox.IsDropDownOpen = true;
+
+				if (SearchFilter.IsChecked == false)
+				{
+					if (!string.IsNullOrEmpty(searchTextBox.Text))
+					{
+						searchComboBox.ItemsSource = TripInfoList.Where(s => ConvertToUnSign(s.Location).IndexOf(ConvertToUnSign(searchTextBox.Text), StringComparison.InvariantCultureIgnoreCase) != -1).ToList();
+						if (searchComboBox.Items.Count == 0)
+						{
+							SearchNotificationComboBox.IsDropDownOpen = true;
+							searchComboBox.IsDropDownOpen = false;
+						}
+
+					}
+					else
+					{
+						searchComboBox.ItemsSource = TripInfoList;
+					}
+				}
+                else
+                {
+					if (!string.IsNullOrEmpty(searchTextBox.Text))
+					{
+						searchComboBox.ItemsSource = TripInfoList.Where(s => s.MembersList.Any(p => ConvertToUnSign(p.MemberName).IndexOf(ConvertToUnSign(searchTextBox.Text), StringComparison.InvariantCultureIgnoreCase) != -1)).ToList();
+						if (searchComboBox.Items.Count == 0)
+						{
+							SearchNotificationComboBox.IsDropDownOpen = true;
+							searchComboBox.IsDropDownOpen = false;
+						}
+
+					}
+					else
+					{
+						searchComboBox.ItemsSource = TripInfoList;
+					}
+				}
+			}
+		}
+		private void searchTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Down)
+			{
+				searchComboBox.Focus();
+				searchComboBox.SelectedIndex = 0;
+				searchComboBox.IsDropDownOpen = true;
+			}
+			if (e.Key == Key.Escape)
+			{
+				searchComboBox.IsDropDownOpen = false;
+
+			}
+		}
+
+		private void Pasting_EnhanceTextSearch(object sender, DataObjectPastingEventArgs e)
+		{
+			searchComboBox.IsDropDownOpen = true;
+
+			string pastedText = (string)e.DataObject.GetData(typeof(string));
+			string fullText = searchTextBox.Text.Insert(searchTextBox.CaretIndex, (pastedText));
+
+			if (!string.IsNullOrEmpty(fullText))
+			{
+				searchComboBox.ItemsSource = TripInfoList.Where(s => ConvertToUnSign(s.Location).IndexOf(ConvertToUnSign(fullText), StringComparison.InvariantCultureIgnoreCase) != -1).ToList();
+				if (searchComboBox.Items.Count == 0)
+				{
+					SearchNotificationComboBox.IsDropDownOpen = true;
+					searchComboBox.IsDropDownOpen = false;
+				}
+			}
+			else
+			{
+				searchComboBox.ItemsSource = TripInfoList;
+			}
 		}
 	}
 }

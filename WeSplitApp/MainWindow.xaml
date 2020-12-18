@@ -265,8 +265,8 @@
         </StackPanel>
 
         <!--Thanh để lọc loại thức ăn-->
-        <DockPanel Name="TypeBarDockPanel" Height="40" Margin="15,0" Grid.Row="1" Grid.Column="1" Visibility="Visible">
-            <StackPanel Orientation="Horizontal" Width="590" DockPanel.Dock="Left">
+                <DockPanel Name="TypeBarDockPanel" Height="40" Margin="15,0" Grid.Row="1" Grid.Column="1" Visibility="Visible">
+            <StackPanel Orientation="Horizontal" Width="400" DockPanel.Dock="Left">
                 <Button Height="40" Width="130" x:Name="AllButton" Click="ChangeClickedTypeButton_Click"
                         BorderThickness="0" Content="All" FontSize="15" Foreground="Gray">
                     <Button.Style>
@@ -384,7 +384,7 @@
                                                             </Grid.ColumnDefinitions>
                                                             <!--<Image Grid.Column="0" Source="{Binding PrimaryImagePath, Converter={StaticResource converter}}" Width="70" Height="70" Stretch="Fill"-->
                                                             <!--RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased" Margin="0"/>-->
-                                                            <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center"
+                                                            <TextBlock Grid.Column="1" Text="{Binding TripName}" VerticalAlignment="Center"
                                                                        Margin="-10 0 0 0" FontSize="13" TextWrapping="Wrap" 
                                                                        Width="120"></TextBlock>
                                                         </Grid>
@@ -407,18 +407,20 @@
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
-                                <TextBox Name="searchTextBox"
-                                         Width="223" HorizontalAlignment="Left"
-                                         FontSize="14"
-                                         VerticalContentAlignment="Center"
-                                         BorderThickness="0"></TextBox>
+                                <TextBox Name="searchTextBox" PreviewKeyDown="searchTextBox_PreviewKeyDown"
+                                         PreviewTextInput="searchTextBox_PreviewTextInput" FontSize="14"
+                                         PreviewKeyUp="PreviewKeyUp_EnhanceTextBoxSearch" VerticalContentAlignment="Center"
+                                         DataObject.Pasting="Pasting_EnhanceTextSearch" BorderThickness="0" Margin="0,0,14,0"/>
                             </Grid>
 
                         </StackPanel>
                     </DockPanel>
                 </Border>
             </StackPanel>
-            <TextBlock></TextBlock>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <RadioButton Name="SearchFilter" IsChecked="True">Tên Thành Viên</RadioButton>
+                <RadioButton Margin="5 0 0 0">Địa điểm</RadioButton>
+            </StackPanel>
         </DockPanel>
 
         <!--Hình ảnh và tên các món ăn-->
