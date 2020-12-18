@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Serialization;
+using Microsoft.Win32;
 
 namespace WeSplitApp
 {
@@ -33,8 +34,9 @@ namespace WeSplitApp
 		//private BindingList<Trip> TripOnScreen;						//Danh sách chuyến đi để hiện trên màn hình
 		private BindingList<ColorSetting> ListColor;
 		private Condition FilterCondition = new Condition { Type = "" };
-
-		private bool isMinimizeMenu, isEditMode, IsDetailTrip;
+		public Trip trip = new Trip();
+		private bool isMinimizeMenu, isEditMode = true, IsDetailTrip;
+		int selectedTripIndex = 0;
 		/*private int TripPerPage = 12;           //Số chuyến đi mỗi trang
 		private int _totalPage = 0;             //Tổng số trang
 		public int TotalPage
@@ -118,21 +120,21 @@ namespace WeSplitApp
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-           // Đọc dữ liệu các món ăn từ data
+			// Đọc dữ liệu các món ăn từ data
 
-            XmlSerializer xsFood = new XmlSerializer(typeof(List<Trip>));
-            try
-            {
-                using (var reader = new StreamReader(@"Data\Trip.xml"))
-                {
-                    TripInfoList = (List<Trip>)xsFood.Deserialize(reader);
-                }
-            }
-            catch
-            {
-                TripInfoList = new List<Trip>();
-            }
-            /*TripOnScreen = TripInfoList;
+			XmlSerializer xsFood = new XmlSerializer(typeof(List<Trip>));
+			try
+			{
+				using (var reader = new StreamReader(@"Data\Trip.xml"))
+				{
+					TripInfoList = (List<Trip>)xsFood.Deserialize(reader);
+				}
+			}
+			catch
+			{
+				TripInfoList = new List<Trip>();
+			}
+			/*TripOnScreen = TripInfoList;
 
 			//Khởi tạo phân trang
 			TotalPage = (TripInfoList.Count - 1) / TripPerPage + 1;
@@ -145,57 +147,57 @@ namespace WeSplitApp
 			{
 				TotalItem += " item";
 			}*/
-            //UpdatePageButtonStatus();
+			//UpdatePageButtonStatus();
 
-   //         TripInfoList = new List<Trip>
-   //         {
-   //             new Trip
-   //             {
-   //                 TripName = "abc",
-   //                 Location = "Quang Nam",
-   //                 Stage = "abc",
-   //                 PrimaryImagePath = "Images\\1.jpg",
-   //                 IsFavorite = true,
-   //                // ImagesList = new List<string> { "Images\\2.jpg", "Images\\3.jpg" },
-   //                 MembersList = new List<Member>
-   //                 {
-   //                     new Member
-   //                     {
-   //                         MemberName = "Bui Van Vi",
-   //                         CostsList = new List<Cost>
-   //                         {
-   //                             new Cost
-   //                             {
-   //                                 PaymentName = "Com D2",
-   //                                 Charge = 20000
-   //                             },
-   //                             new Cost
-   //                             {
-   //                                 PaymentName = "Sua chua nha dam",
-   //                                 Charge = 7000
-   //                             }
-   //                         }
-   //                     },
-   //                     new Member
-   //                     {
-   //                         MemberName = "Pham Tan",
-   //                         CostsList = new List<Cost>
-   //                         {
-   //                             new Cost
-   //                             {
-   //                                 PaymentName = "Pho B5",
-   //                                 Charge = 22000
-   //                             },
-   //                             new Cost
-   //                             {
-   //                                 PaymentName = "Sua chua Long Thanh",
-   //                                 Charge = 6000
-   //                             }
-   //                         }
-   //                     }
-   //                 }
-   //             }
-   //         };
+			//         TripInfoList = new List<Trip>
+			//         {
+			//             new Trip
+			//             {
+			//                 TripName = "abc",
+			//                 Location = "Quang Nam",
+			//                 Stage = "abc",
+			//                 PrimaryImagePath = "Images\\1.jpg",
+			//                 IsFavorite = true,
+			//                // ImagesList = new List<string> { "Images\\2.jpg", "Images\\3.jpg" },
+			//                 MembersList = new List<Member>
+			//                 {
+			//                     new Member
+			//                     {
+			//                         MemberName = "Bui Van Vi",
+			//                         CostsList = new List<Cost>
+			//                         {
+			//                             new Cost
+			//                             {
+			//                                 PaymentName = "Com D2",
+			//                                 Charge = 20000
+			//                             },
+			//                             new Cost
+			//                             {
+			//                                 PaymentName = "Sua chua nha dam",
+			//                                 Charge = 7000
+			//                             }
+			//                         }
+			//                     },
+			//                     new Member
+			//                     {
+			//                         MemberName = "Pham Tan",
+			//                         CostsList = new List<Cost>
+			//                         {
+			//                             new Cost
+			//                             {
+			//                                 PaymentName = "Pho B5",
+			//                                 Charge = 22000
+			//                             },
+			//                             new Cost
+			//                             {
+			//                                 PaymentName = "Sua chua Long Thanh",
+			//                                 Charge = 6000
+			//                             }
+			//                         }
+			//                     }
+			//                 }
+			//             }
+			//         };
 			//DetailTripGrid.DataContext = TripInfoList[0];
 
 
@@ -224,10 +226,8 @@ namespace WeSplitApp
 			IsDetailTrip = false;
 
 			//Mặc định không ở chế độ chỉnh sửa chuyến đi
-			isEditMode = false;
-
-			//Lấy danh sách food
-			//var trips = TripOnScreen.Take(TripPerPage);
+			isEditMode = true;
+			
 			TripButtonItemsControl.ItemsSource = TripInfoList;
 			view = (CollectionView)CollectionViewSource.GetDefaultView(TripInfoList);
 			TripListAppearAnimation();
@@ -245,100 +245,13 @@ namespace WeSplitApp
 
 		//---------------------------------------- Các hàm xử lý cập nhật giao diện --------------------------------------------//
 
-		//Cập nhật trạng thái của nút phân trang trong các trường hợp
-		//private void UpdatePageButtonStatus()
-		//{
-		//	//Vô hiệu hóa nút quay về trang trước và quay về trang đầu khi trang hiện tại là trang 1
-		//	if (CurrentPage == 1)
-		//	{
-		//		PreviousPageButton.IsEnabled = false;
-		//		PreviousPageTextBlock.Foreground = Brushes.Black;
-
-		//		FirstPageButton.IsEnabled = false;
-		//		FirstPageTextBlock.Foreground = Brushes.Black;
-		//	}
-		//	else if (PreviousPageButton.IsEnabled == false)
-		//	{
-		//		PreviousPageButton.IsEnabled = true;
-		//		PreviousPageTextBlock.Foreground = Brushes.White;
-
-		//		FirstPageButton.IsEnabled = true;
-		//		FirstPageTextBlock.Foreground = Brushes.White;
-		//	}
-
-		//	//Vô hiệu hóa nút đi tới trang sau và đi tới trang cuối khi trang hiện tại là trang cuối
-		//	if (CurrentPage == TotalPage)
-		//	{
-		//		NextPageButton.IsEnabled = false;
-		//		NextPageTextBlock.Foreground = Brushes.Black;
-
-		//		LastPageButton.IsEnabled = false;
-		//		LastPageTextBlock.Foreground = Brushes.Black;
-		//	}
-		//	else if (NextPageButton.IsEnabled == false)
-		//	{
-		//		NextPageButton.IsEnabled = true;
-		//		NextPageTextBlock.Foreground = Brushes.White;
-
-		//		LastPageButton.IsEnabled = true;
-		//		LastPageTextBlock.Foreground = Brushes.White;
-		//	}
-		//}
-
 		//Cập nhật lại thay đổi từ dữ liệu lên màn hình
 		private void UpdateUIFromData()
 		{
 			view.Filter = Filter;
-
-			//Lấy danh sách thức ăn đã được lọc để khởi tạo lại số trang
-			//GetFilterList();
-			//TotalPage = ((TripOnScreen.Count - 1) / TripPerPage) + 1;
-			//CurrentPage = 1;
-
-			//var trips = TripOnScreen.Take(TripPerPage);
 			TripButtonItemsControl.ItemsSource = TripInfoList;
-
-			//TotalItem = TripOnScreen.Count.ToString();
-			//if (TripOnScreen.Count > 1)
-			//{
-			//	TotalItem += " items";
-			//}
-			//else
-			//{
-			//	TotalItem += " item";
-			//}
 			TripListAppearAnimation();
-			//UpdatePageButtonStatus();
-
 		}
-
-		/*Cập nhật lại danh sách món ăn trên màn hình sau khi nhấn thích*/
-		//private void UpdateFoodStatus()
-		//{
-		//	view.Filter = Filter;
-		//	//GetFilterList();
-		//	//TotalPage = ((TripOnScreen.Count - 1) / TripPerPage) + 1;
-		//	//if (CurrentPage > TotalPage)
-		//	//{
-		//	//	CurrentPage--;
-		//	//}
-		//	///*Lấy danh sách thức ăn đã được lọc để khởi tạo lại số trang */
-		//	//var trips = TripOnScreen.Skip((CurrentPage - 1) * TripPerPage).Take(TripPerPage);
-		//	TripButtonItemsControl.ItemsSource = trips;
-
-		//	TotalItem = TripOnScreen.Count.ToString();
-		//	if (TripOnScreen.Count > 1)
-		//	{
-		//		TotalItem += " items";
-		//	}
-		//	else
-		//	{
-		//		TotalItem += " item";
-		//	}
-		//	UpdatePageButtonStatus();
-		//}
-
-
 
 		//---------------------------------------- Các hàm Get --------------------------------------------//
 
@@ -519,6 +432,16 @@ namespace WeSplitApp
 				DetailTripGrid.Visibility = Visibility.Collapsed;
 				IsDetailTrip = false;
 			}
+			else if (clickedControlButton == HomeButton)
+			{
+				//Đóng giao diện màn hình trang chủ
+				TripListGrid.Visibility = Visibility.Collapsed;
+			}
+			else if (clickedControlButton == AddTripButton)
+			{
+				//Đóng giao diện màn hình thêm chuyến đi mới
+				AddTripGrid.Visibility = Visibility.Collapsed;
+			}
 
 			//Hiển thị màu cho nút vừa được nhấn
 			var button = (Button)sender;
@@ -537,6 +460,22 @@ namespace WeSplitApp
 			{
 				TripListGrid.Visibility = Visibility.Visible;
 				TypeBarDockPanel.Visibility = Visibility.Visible;
+				ControlStackPanel.Visibility = Visibility.Visible;
+			}
+			else if (button == AddTripButton)
+			{
+				AddTripGrid.Visibility = Visibility.Visible;
+				TypeBarDockPanel.Visibility = Visibility.Collapsed;
+				ControlStackPanel.Visibility = Visibility.Collapsed;
+				if (isEditMode == true)
+				{
+					trip = TripInfoList[selectedTripIndex];
+				}
+				else
+				{
+					trip = new Trip();
+				}
+				AddTripGrid.DataContext = trip;
 			}
 
 			//Cập nhật lại giao diện
@@ -733,6 +672,162 @@ namespace WeSplitApp
 			}*/
 		}
 
+		private void AddChargeButton_Click(object sender, RoutedEventArgs e)
+		{
+			var member = ((Button)sender).DataContext as Member;
+			member.CostsList.Add(new Cost());
+		}
+
+		private void AddMemeberButton_Click(object sender, RoutedEventArgs e)
+		{
+			var selectedTrip = ((Button)sender).DataContext as Trip;
+			selectedTrip.MembersList.Add(new Member());
+
+		}
+
+		private void DeleteChargeButton_Click(object sender, RoutedEventArgs e)
+		{
+			var member = ((Button)sender).DataContext as Member;
+			if (member.CostsList.Count >= 1)
+			{
+				member.CostsList.Remove(member.CostsList[member.CostsList.Count - 1]);
+			}
+			else
+			{
+				MessageBox.Show($"{member.MemberName} không còn khoản chi nào để xoá!", "Warning!!", MessageBoxButton.OK, MessageBoxImage.Warning);
+			}
+		}
+
+		private void DeleteMemeberButton_Click(object sender, RoutedEventArgs e)
+		{
+			var selectedTrip = ((Button)sender).DataContext as Trip;
+			if (selectedTrip.MembersList.Count >= 1)
+			{
+				selectedTrip.MembersList.Remove(selectedTrip.MembersList[selectedTrip.MembersList.Count - 1]);
+			}
+			else
+			{
+				MessageBox.Show("Không còn thành viên nào để xoá!", "Warning!!", MessageBoxButton.OK, MessageBoxImage.Warning);
+			}
+		}
+
+		private void DeleteImageButton_Click(object sender, RoutedEventArgs e)
+		{
+			trip.ImagesList.Remove(ImagesListView.SelectedItem as TripImage);
+		}
+
+		private void AddImageButton_Click(object sender, RoutedEventArgs e)
+		{
+
+			var fileDialog = new OpenFileDialog();
+			fileDialog.Multiselect = true;
+			fileDialog.Filter = "Image Files(*.JPG*;*.JPEG*;*.PNG*)|*.JPG;*.JPEG*;*.PNG*";
+			fileDialog.Title = "Select Image";
+
+			if (fileDialog.ShowDialog() == true)
+			{
+				var fileNames = fileDialog.FileNames;
+				foreach (var filename in fileNames)
+				{
+					trip.ImagesList.Add(new TripImage(filename));
+				}
+			}
+		}
+
+		private void SaveTripButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (isEditMode == false)
+			{
+				string appFolder = GetAppDomain();
+				for (int i = 0; i < trip.ImagesList.Count; i++)
+				{
+					var imageExtension = System.IO.Path.GetExtension(trip.ImagesList[i].ImagePath);
+					var newImageName = $"Images/{trip.TripID}_{i}.{imageExtension}";
+					var newPath = appFolder + newImageName;
+					File.Copy(trip.ImagesList[i].ImagePath, newPath, true);
+					trip.ImagesList[i].ImagePath = newImageName;
+				}
+				trip.PrimaryImagePath = trip.ImagesList[0].ImagePath;
+				TripInfoList.Add(trip);
+			}
+			else
+			{
+				string appFolder = GetAppDomain();
+				for (int i = 0; i < trip.ImagesList.Count; i++)
+				{
+					TripImage currentImage = trip.ImagesList[i];
+					var imageExtension = System.IO.Path.GetExtension(currentImage.ImagePath);
+					var newImageName = $"Images/{trip.TripID}_{i}{imageExtension}";
+					var newPath = appFolder + newImageName;
+					if (System.IO.Path.IsPathRooted(currentImage.ImagePath))
+					{
+						File.Copy(currentImage.ImagePath, newPath, true);
+						trip.ImagesList[i].ImagePath = newImageName;
+					}
+					else
+					{
+						if (currentImage.ImagePath != TripInfoList[selectedTripIndex].ImagesList[i].ImagePath)
+						{
+							File.Delete(appFolder + TripInfoList[selectedTripIndex].ImagesList[i].ImagePath);
+							File.Move(appFolder + currentImage.ImagePath, newPath);
+							currentImage.ImagePath = newImageName;
+						}
+					}
+				}
+				if (trip.ImagesList.Count > 0)
+				{
+					trip.PrimaryImagePath = trip.ImagesList[0].ImagePath;
+				}
+				else
+				{
+					trip.PrimaryImagePath = "";
+				}
+				TripInfoList[selectedTripIndex] = trip;
+			}
+
+			//Đóng giao diện thêm/chỉnh sửa và mở giao diện trang chủ
+			CancelTripButton_Click(null, null);
+		}
+
+		private void CancelTripButton_Click(object sender, RoutedEventArgs e)
+		{
+			//Đóng màn hình thêm chuyến đi
+			AddTripGrid.Visibility = Visibility.Collapsed;
+			//Tắt màu của nút Add
+			var wrapPanel = (WrapPanel)AddTripButton.Content;
+			var collection = wrapPanel.Children;
+			var block = (TextBlock)collection[0];
+			var text = (TextBlock)collection[2];
+			block.Background = Brushes.Transparent;
+			text.Foreground = Brushes.Black;
+
+			//Quay về màn hình Home
+			clickedControlButton = HomeButton;
+			TripListGrid.Visibility = Visibility.Visible;
+			TypeBarDockPanel.Visibility = Visibility.Visible;
+			ControlStackPanel.Visibility = Visibility.Visible;
+			//Hiển thị màu cho nút Home
+			wrapPanel = (WrapPanel)HomeButton.Content;
+			collection = wrapPanel.Children;
+			block = (TextBlock)collection[0];
+			text = (TextBlock)collection[2];
+			block.Background = (SolidColorBrush)new BrushConverter().ConvertFromString(ColorScheme);
+			text.Foreground = block.Background;
+
+			//Tắt chế độ chỉnh sửa
+			isEditMode = false;
+
+			//Cập nhật lại giao diện
+			UpdateUIFromData();
+		}
+
+		private void EditTripButton_Click(object sender, RoutedEventArgs e)
+		{
+			isEditMode = true;
+			//Bật màn hình chỉnh sửa
+			ChangeClickedControlButton_Click(AddTripButton, null);
+		}
+
 		private void MenuButton_Click(object sender, RoutedEventArgs e)
 		{
 			if (isMinimizeMenu == false)
@@ -762,7 +857,8 @@ namespace WeSplitApp
 			DetailTripGrid.Visibility = Visibility.Visible;
 
 			//Lấy chỉ số của hình ảnh món ăn được nhấn
-			DetailTripGrid.DataContext = TripInfoList[GetElementIndexInArray((Button)sender)];
+			selectedTripIndex = GetElementIndexInArray((Button)sender);
+			DetailTripGrid.DataContext = TripInfoList[selectedTripIndex];
 
 			//Bật chế độ đang ở màn hình chi tiết
 			IsDetailTrip = true;

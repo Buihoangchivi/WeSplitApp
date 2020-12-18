@@ -475,7 +475,7 @@
             <!--Tiêu đề và thao tác với chuyến đi-->
 
             <!--Label Chi tiết chuyến đi-->
-            <Border  Grid.ColumnSpan="4" Background="Gainsboro" CornerRadius="10" Margin="10,5,0,0">
+            <Border Grid.ColumnSpan="4" Background="Gainsboro" CornerRadius="10" Margin="10,5,0,0">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="5" Direction="230" Color="Black" ShadowDepth="8" Opacity="0.2"/>
                 </Border.Effect>
@@ -492,7 +492,8 @@
 
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <!--Nút chỉnh sửa chuyến đi-->
-                    <Button BorderThickness="0" Height="35" Width="35">
+                    <Button BorderThickness="0" Height="35" Width="35"
+                            Name="EditTripButton" Click="EditTripButton_Click">
                         <Image Source="Images/editImage.png" Width="20" 
                            RenderOptions.BitmapScalingMode="HighQuality"></Image>
                     </Button>
@@ -504,8 +505,6 @@
                     </Button>
                 </StackPanel>
             </Border>
-
-            <!--Thông tin cơ bản chuyến đi-->
 
             <!--Thông tin cơ bản chuyến đi-->
             <Border Grid.Row="1" Grid.ColumnSpan="2" Background="Gainsboro" CornerRadius="10" Margin="10,10,0,0">
@@ -565,7 +564,7 @@
                         </ListView>
 
                     </DockPanel>
-                    
+
                     <!--Giai đoạn hiện tại-->
                     <TextBlock Grid.Row="2" Grid.Column="1" Text="Giai đoạn:" 
                                FontSize="14" FontWeight="DemiBold" Margin="7,6,0,0"/>
@@ -616,6 +615,273 @@
 
             </Border>
 
+        </Grid>
+
+        <!--Thêm chuyến đi mới-->
+        <Grid Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Name="AddTripGrid" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="1.2*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="11*"/>
+                <RowDefinition Height="45"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="1.35*"/>
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+
+            <!--Tiêu đề Thêm chuyến đi mới-->
+            <TextBlock Grid.Column="1" FontSize="25" Text="THÊM CHUYẾN ĐI MỚI" VerticalAlignment="Center" HorizontalAlignment="Center"
+                       Foreground="{DynamicResource ColorScheme}" FontWeight="ExtraBold" FontStyle="Italic"/>
+
+            <!--Hai nút lưu và hủy chuyến đi mới-->
+            <StackPanel Grid.Column="2" Orientation="Horizontal" 
+                        HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button Background="White" BorderThickness="0" Name="CancelTripButton" 
+                                Click="CancelTripButton_Click" Height="35" VerticalAlignment="Top">
+                    <WrapPanel Margin="15,0">
+                        <Image Source="Images/deleteText.png" Width="15" Margin="0,0,7,0" 
+                                       RenderOptions.BitmapScalingMode="HighQuality"></Image>
+                        <TextBlock VerticalAlignment="Center" FontSize="15" FontWeight="Medium">HỦY</TextBlock>
+                    </WrapPanel>
+                </Button>
+                <Button Margin="0,0,10,0" Background="White" BorderThickness="0" Name="SaveTripButton" 
+                        Click="SaveTripButton_Click" Height="35" VerticalAlignment="Top">
+                    <WrapPanel Margin="15,0">
+                        <Image Source="Images/saveImage.png" Width="20" Margin="0,0,7,0" 
+                                       RenderOptions.BitmapScalingMode="HighQuality"></Image>
+                        <TextBlock VerticalAlignment="Center" FontSize="15" FontWeight="Medium">LƯU</TextBlock>
+                    </WrapPanel>
+                </Button>
+            </StackPanel>
+
+            <!--Khung thêm hình ảnh chuyến đi-->
+            <Border Grid.Row="1" Grid.RowSpan="3" Grid.Column="1"
+                    Background="Gainsboro" CornerRadius="10" Margin="0">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="5" Direction="230" Color="Black" ShadowDepth="8" Opacity="0.2"/>
+                </Border.Effect>
+
+            </Border>
+
+            <!--Nhập tên chuyến đi-->
+            <StackPanel Grid.Row="1" Grid.Column="1"  Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock VerticalAlignment="Center" FontSize="16" 
+                           Margin="10,10,0,0" FontWeight="Medium">Tên chuyến đi:</TextBlock>
+                <Border CornerRadius="7" BorderThickness="1.5" BorderBrush="Gray"
+                        Width="230" Height="30" Margin="5,10,0,0" Background="GhostWhite">
+                    <TextBox Text="{Binding TripName}" BorderThickness="0" FontSize="14" Background="{x:Null}"
+                             Margin="5,0" Height="25.5" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+            </StackPanel>
+
+            <!--Nhập địa điểm chuyến đi-->
+            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock VerticalAlignment="Center" FontSize="16"
+                           Margin="10,0,0,0" FontWeight="Medium">Địa điểm:</TextBlock>
+                <Border CornerRadius="7" BorderThickness="1.5" BorderBrush="Gray"
+                        Width="230" Height="30" Margin="39,0,0,0" Background="GhostWhite">
+                    <TextBox Text="{Binding Location}" BorderThickness="0" FontSize="14" Background="{x:Null}"
+                             Margin="5,0" Height="25.5" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+            </StackPanel>
+
+            <!--Chọn giai đoạn của chuyến đi-->
+            <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+
+                <TextBlock VerticalAlignment="Center" FontSize="16" 
+                           Margin="10,0,0,0" FontWeight="Medium">Giai đoạn:</TextBlock>
+                <ComboBox Name="StageComboBox" SelectedValuePath="Content" FontSize="14"
+                          SelectedValue="{Binding Stage}" Margin="35,0,0,0">
+                    <ComboBoxItem>
+                        Bắt đầu
+                    </ComboBoxItem>
+                    <ComboBoxItem>
+                        Kết thúc
+                    </ComboBoxItem>
+                </ComboBox>
+
+            </StackPanel>
+
+            <!--Khung thêm hình ảnh chuyến đi-->
+            <Border Grid.Row="4" Grid.Column="1" Background="Gainsboro" 
+                    CornerRadius="10" Margin="0,10,0,5">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="5" Direction="230" Color="Black" ShadowDepth="8" Opacity="0.2"/>
+                </Border.Effect>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+
+                    <!--Hai nút thêm và xóa ảnh chuyến đi-->
+                    <DockPanel VerticalAlignment="Center">
+                        <TextBlock DockPanel.Dock="Left" FontSize="16" VerticalAlignment="Center" 
+                               Text="Hình ảnh chuyến đi" Margin="10,0,0,0" FontWeight="Medium"/>
+                        <Button Name="AddImageButton" Click="AddImageButton_Click" Height="25"
+                            DockPanel.Dock="Right" HorizontalAlignment="Right" Width="25" 
+                            BorderThickness="0" Margin="0,0,10,0">
+                            <Image Source="Images/addImage.png" Width="16" RenderOptions.BitmapScalingMode="HighQuality"></Image>
+                        </Button>
+                        <Button Name="DeleteImageButton" Click="DeleteImageButton_Click" Height="25" 
+                            HorizontalAlignment="Right" Width="25" BorderThickness="0">
+                            <Image Source="Images/deleteRecipe.png" Width="18" RenderOptions.BitmapScalingMode="HighQuality"></Image>
+                        </Button>
+                    </DockPanel>
+
+                    <!--Khung hiển thị hình ảnh chuyến đi-->
+                    <ListView Grid.Row="1" Name="ImagesListView" ItemsSource="{Binding ImagesList}"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="{x:Null}"
+                          ScrollViewer.VerticalScrollBarVisibility="Hidden" BorderThickness="0">
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Rectangle RadiusX="10" RadiusY="10" Width="106" Height="80">
+                                    <Rectangle.Fill>
+                                        <ImageBrush ImageSource="{Binding ImagePath, Converter={StaticResource converter}}" 
+                                       Stretch="UniformToFill"
+                                       RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased" />
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </Border>
+
+            <!--Khung hiển thị danh sách thành viên-->
+            <Border Grid.Row="1" Grid.RowSpan="4" Grid.Column="2" Background="Gainsboro" 
+                    CornerRadius="10" Margin="10,0,10,5">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="5" Direction="230" Color="Black" ShadowDepth="8" Opacity="0.2"/>
+                </Border.Effect>
+
+                <ListView ItemsSource="{Binding MembersList}" BorderThickness="0" Background="{x:Null}"
+                          ScrollViewer.VerticalScrollBarVisibility="Hidden" Margin="0,5,0,0">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Width="748">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+                                <DockPanel LastChildFill="True">
+                                    <TextBlock DockPanel.Dock="Left" FontSize="15"
+                                               Margin="0,10,0,0" FontWeight="Medium">Tên thành viên:</TextBlock>
+                                    <Border CornerRadius="7" BorderThickness="1.5" BorderBrush="Gray"
+                                            Height="30" Margin="5,5,0,0" VerticalAlignment="Top" Background="GhostWhite">
+                                        <TextBox Text="{Binding MemberName}" BorderThickness="0" FontSize="14" Background="{x:Null}"
+                                                 Margin="5,0" Height="25.5" VerticalContentAlignment="Center"/>
+                                    </Border>
+                                </DockPanel>
+                                <StackPanel Grid.Column="1">
+                                    <ListView ItemsSource="{Binding CostsList}" MaxHeight="200"
+                                              ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                              BorderThickness="0" Background="{x:Null}">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Width="486">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="1.05*"/>
+                                                        <ColumnDefinition Width="1*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <DockPanel LastChildFill="True" Margin="3,0,0,5">
+                                                        <TextBlock DockPanel.Dock="Left" FontSize="15"
+                                                                   Margin="0,7,0,0" FontWeight="Medium">Khoản chi:</TextBlock>
+                                                        <Border CornerRadius="7" BorderThickness="1.5" BorderBrush="Gray"
+                                                                Height="30" Margin="5,2,0,0" VerticalAlignment="Top" Background="GhostWhite">
+                                                            <TextBox Text="{Binding PaymentName}" BorderThickness="0" FontSize="14" 
+                                                                     Background="{x:Null}" Margin="5,0" Height="25.5"
+                                                                     VerticalContentAlignment="Center"/>
+                                                        </Border>
+                                                    </DockPanel>
+
+                                                    <DockPanel LastChildFill="True" Grid.Column="1" Margin="7,0,0,0">
+                                                        <TextBlock DockPanel.Dock="Left" FontSize="15"
+                                                                   Margin="0,7,0,0" FontWeight="Medium">Chi phí:</TextBlock>
+                                                        <Border CornerRadius="7" BorderThickness="1.5" BorderBrush="Gray"
+                                                                Height="30" Margin="5,2,0,0" VerticalAlignment="Top" Background="GhostWhite">
+                                                            <TextBox Text="{Binding Charge}" BorderThickness="0" FontSize="14" 
+                                                                     Background="{x:Null}" Margin="5,0" Height="25.5"
+                                                                     VerticalContentAlignment="Center"/>
+                                                        </Border>
+                                                    </DockPanel>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+
+                                    <!--Hai nút thêm và xóa khoản chi của từng thành viên trong chuyến đi-->
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0">
+                                        <Button Margin="0,0,0,5" BorderThickness="0" Name="AddChargeButton" Background="{x:Null}"
+                                                Click="DeleteChargeButton_Click" Height="35" VerticalAlignment="Top">
+                                            <WrapPanel Margin="15,0">
+                                                <Image Source="Images/deleteRecipe.png" Width="20" Margin="0,0,5,0" 
+                                                       RenderOptions.BitmapScalingMode="HighQuality"></Image>
+                                                <TextBlock VerticalAlignment="Center" FontSize="15">Xóa khoản chi</TextBlock>
+                                            </WrapPanel>
+                                        </Button>
+                                        <Button Background="{x:Null}" BorderThickness="0" Name="DeleteChargeButton" 
+                                                Click="AddChargeButton_Click" Height="35" VerticalAlignment="Top">
+                                            <WrapPanel Margin="15,0">
+                                                <Image Source="Images/addImage.png" Width="15" Margin="0,0,5,0" 
+                                                       RenderOptions.BitmapScalingMode="HighQuality"></Image>
+                                                <TextBlock VerticalAlignment="Center" FontSize="15">Thêm khoản chi</TextBlock>
+                                            </WrapPanel>
+                                        </Button>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+            </Border>
+            
+            <!--Hai nút thêm và xóa thành viên trong chuyến đi-->
+            <StackPanel Grid.Row="5" Grid.Column="2" Orientation="Horizontal" 
+                        HorizontalAlignment="Right">
+                <!--<Button Margin="0,0,0,5" Background="White" BorderThickness="0" Name="DeleteMemeberButton" 
+                        Click="DeleteMemeberButton_Click" Height="35" VerticalAlignment="Top">
+                    <WrapPanel Margin="15,0">
+                        <Image Source="Images/deleteRecipe.png" Width="20" Margin="0,0,5,0" 
+                                       RenderOptions.BitmapScalingMode="HighQuality"></Image>
+                        <TextBlock VerticalAlignment="Center" FontSize="15"  FontWeight="Medium">XÓA THÀNH VIÊN</TextBlock>
+                    </WrapPanel>
+                </Button>-->
+                <Button Name="DeleteMemeberButton" Foreground="{DynamicResource ColorScheme}" Height="33"
+                        Click="DeleteMemeberButton_Click" Margin="0,0,10,0"
+                        Background="White" BorderThickness="1.3" BorderBrush="{DynamicResource ColorScheme}">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="8"/>
+                            <Setter Property="BorderThickness" Value="8"/>
+                        </Style>
+                    </Button.Resources>
+                    <TextBlock VerticalAlignment="Center" FontSize="15" FontWeight="Medium" Margin="12,0">XÓA THÀNH VIÊN</TextBlock>
+                </Button>
+                
+                <Button Name="AddMemeberButton" Foreground="White" Height="33"
+                        Click="AddMemeberButton_Click" Margin="0,0,10,0"
+                        Background="{DynamicResource ColorScheme}" BorderThickness="0">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="8"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                        </Style>
+                    </Button.Resources>
+                    <TextBlock VerticalAlignment="Center" FontSize="15" FontWeight="Medium" Margin="12,0">THÊM THÀNH VIÊN</TextBlock>
+                </Button>
+            </StackPanel>
         </Grid>
     </Grid>
 </Window>

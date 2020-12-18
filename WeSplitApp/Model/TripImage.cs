@@ -21,6 +21,15 @@ public class TripImage : INotifyPropertyChanged
 		}
 	}
 
+	public TripImage()
+	{
+		this.imagePath = "";
+	}
+	public TripImage(string filename)
+	{
+		this.imagePath = filename;
+	}
+
 	#region INotifyPropertyChanged Members  
 
 	public event PropertyChangedEventHandler PropertyChanged;

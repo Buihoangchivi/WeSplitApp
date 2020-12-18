@@ -7,14 +7,26 @@ using System.ComponentModel;
 
 public class Trip : INotifyPropertyChanged
 {
+	private int tripID;
 	private string tripName;
 	private string location;
 	private string stage;
-	private string primaryImagePath;		//Đường dẫn ảnh chính
-	private bool isFavorite;				//Chuyến đi yêu thích
+	private string primaryImagePath;        //Đường dẫn ảnh chính
 	private BindingList<TripImage> imagesList;
-	private List<Member> membersList;
+	private BindingList<Member> membersList;
 
+	public int TripID
+	{
+		get
+		{
+			return tripID;
+		}
+		set
+		{
+			tripID = value;
+			OnPropertyChanged("TripID");
+		}
+	}
 	public string TripName
 	{
 		get
@@ -66,21 +78,6 @@ public class Trip : INotifyPropertyChanged
 			}
 		}
 	}
-	public bool IsFavorite
-	{
-		get
-		{
-			return isFavorite;
-		}
-		set
-		{
-			isFavorite = value;
-			if (PropertyChanged != null)
-			{
-				PropertyChanged(this, new PropertyChangedEventArgs("IsFavorite"));
-			}
-		}
-	}
 	public BindingList<TripImage> ImagesList
 	{
 		get
@@ -93,7 +90,7 @@ public class Trip : INotifyPropertyChanged
 			OnPropertyChanged("ImagesList");
 		}
 	}
-	public List<Member> MembersList
+	public BindingList<Member> MembersList
 	{
 		get
 		{
@@ -105,6 +102,56 @@ public class Trip : INotifyPropertyChanged
 			OnPropertyChanged("MembersList");
 		}
 	}
+	public Trip()
+    {
+		imagesList = new BindingList<TripImage>();
+		MembersList = new BindingList<Member>();
+    }
+
+	/*Phương thức khởi tạo để chỉnh sửa chuyến đi*/
+	public Trip(Trip oldTrip)
+    {
+		tripID = oldTrip.tripID;
+		tripName = string.Copy(oldTrip.TripName);
+		location = string.Copy(oldTrip.Location);
+		stage = string.Copy(oldTrip.Stage);
+		primaryImagePath = string.Copy(oldTrip.PrimaryImagePath);
+
+		imagesList = new BindingList<TripImage>();
+
+		foreach(var image in oldTrip.ImagesList)
+        {
+			imagesList.Add(new TripImage(image.ImagePath));
+        }
+
+		membersList = new BindingList<Member>();
+
+		foreach( var member in oldTrip.MembersList)
+        {
+			if (member.MemberName != null)
+			{
+				membersList.Add(new Member()
+				{
+					MemberName = string.Copy(member.MemberName)
+				});
+			}
+            else
+            {
+				membersList.Add(new Member()
+				{
+					MemberName = ""
+				});
+			}
+			foreach(var cost in member.CostsList)
+            {
+				membersList[membersList.Count - 1].CostsList.Add(new Cost()
+				{
+					Charge = cost.Charge,
+					PaymentName = cost.PaymentName
+				}); ;
+            }
+        }
+    }
 
 	#region INotifyPropertyChanged Members  
 
