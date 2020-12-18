@@ -833,12 +833,20 @@ namespace WeSplitApp
                     {
                         if (currentImage.ImagePath != TripInfoList[selectedTripIndex].ImagesList[i].ImagePath)
                         {
-							File.Move(newPath, appFolder + currentImage.ImagePath);
+							File.Delete(appFolder + TripInfoList[selectedTripIndex].ImagesList[i].ImagePath);
+							File.Move(appFolder + currentImage.ImagePath, newPath);
 							currentImage.ImagePath = newImageName;
                         }
 					}
 				}
-				trip.PrimaryImagePath = trip.ImagesList[0].ImagePath;
+				if (trip.ImagesList.Count > 0)
+				{
+					trip.PrimaryImagePath = trip.ImagesList[0].ImagePath;
+				}
+                else
+                {
+					trip.PrimaryImagePath = "";
+                }
 				TripInfoList[selectedTripIndex] = trip;
 
 			}

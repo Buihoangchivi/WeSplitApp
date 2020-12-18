@@ -128,10 +128,20 @@ public class Trip : INotifyPropertyChanged
 
 		foreach( var member in oldTrip.MembersList)
         {
-			membersList.Add(new Member()
+			if (member.MemberName != null)
 			{
-				MemberName = string.Copy(member.MemberName)
-			});
+				membersList.Add(new Member()
+				{
+					MemberName = string.Copy(member.MemberName)
+				});
+			}
+            else
+            {
+				membersList.Add(new Member()
+				{
+					MemberName = ""
+				});
+			}
 			foreach(var cost in member.CostsList)
             {
 				membersList[membersList.Count - 1].CostsList.Add(new Cost()
