@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Serialization;
+using Microsoft.Win32;
 
 namespace WeSplitApp
 {
@@ -33,6 +34,7 @@ namespace WeSplitApp
 		//private BindingList<Trip> TripOnScreen;						//Danh sách chuyến đi để hiện trên màn hình
 		private BindingList<ColorSetting> ListColor;
 		private Condition FilterCondition = new Condition { Type = "" };
+		public Trip trip = new Trip();
 
 		private bool isMinimizeMenu, isEditMode, IsDetailTrip;
 		/*private int TripPerPage = 12;           //Số chuyến đi mỗi trang
@@ -228,6 +230,7 @@ namespace WeSplitApp
 
 			//Lấy danh sách food
 			//var trips = TripOnScreen.Take(TripPerPage);
+			AddTripGrid.DataContext = TripInfoList[0];
 			TripButtonItemsControl.ItemsSource = TripInfoList;
 			view = (CollectionView)CollectionViewSource.GetDefaultView(TripInfoList);
 			TripListAppearAnimation();
@@ -731,6 +734,80 @@ namespace WeSplitApp
 			{
 				//Do nothing
 			}*/
+		}
+
+		private void AddChargeButton_Click(object sender, RoutedEventArgs e)
+		{
+			var b = ((Button)sender).DataContext as Member;
+			b.CostsList.Add(new Cost());
+		}
+
+		private void AddMemeberButton_Click(object sender, RoutedEventArgs e)
+		{
+			var b = ((Button)sender).DataContext as Trip;
+			b.MembersList.Add(new Member());
+
+		}
+
+		private void DeleteChargeButton_Click(object sender, RoutedEventArgs e)
+		{
+			var b = ((Button)sender).DataContext as Member;
+			b.CostsList.Remove(b.CostsList[b.CostsList.Count - 1]);
+
+		}
+
+		private void DeleteMemeberButton_Click(object sender, RoutedEventArgs e)
+		{
+			var b = ((Button)sender).DataContext as Trip;
+			b.MembersList.Remove(b.MembersList[b.MembersList.Count - 1]);
+		}
+
+		private void DeleteImageButton_Click(object sender, RoutedEventArgs e)
+		{
+			trip.ImagesList.Remove(ImagesListView.SelectedItem as TripImage);
+		}
+
+		private void AddImageButton_Click(object sender, RoutedEventArgs e)
+		{
+
+			var fileDialog = new OpenFileDialog();
+			fileDialog.Multiselect = true;
+			fileDialog.Filter = "Image Files(*.JPG*;*.JPEG*)|*.JPG;*.JPEG*";
+			fileDialog.Title = "Select Image";
+
+			if (fileDialog.ShowDialog() == true)
+			{
+				var fileNames = fileDialog.FileNames;
+				foreach (var filename in fileNames)
+				{
+					trip.ImagesList.Add(new TripImage(filename));
+				}
+			}
+		}
+
+		private void SaveTripButton_Click(object sender, RoutedEventArgs e)
+		{
+			string appFolder = GetAppDomain();
+			for (int i = 0; i < trip.ImagesList.Count; i++)
+			{
+				var newImageName = $"Images/{trip.TripID}_{i}.jpg";
+				var newPath = appFolder + newImageName;
+				File.Copy(trip.ImagesList[i].ImagePath, newPath, true);
+
+				trip.ImagesList[i].ImagePath = newImageName;
+			}
+			trip.PrimaryImagePath = trip.ImagesList[0].ImagePath;
+			TripInfoList.Add(trip);
+			//Đua vào list trip ở đây
+
+			/*
+			 Xử lý khi update chuyến đi
+			 */
+		}
+
+		private void CancelTripButton_Click(object sender, RoutedEventArgs e)
+		{
+
 		}
 
 		private void MenuButton_Click(object sender, RoutedEventArgs e)

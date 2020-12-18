@@ -7,14 +7,26 @@ using System.ComponentModel;
 
 public class Trip : INotifyPropertyChanged
 {
+	private int tripID;
 	private string tripName;
 	private string location;
 	private string stage;
-	private string primaryImagePath;		//Đường dẫn ảnh chính
-	private bool isFavorite;				//Chuyến đi yêu thích
-	private BindingList<TripImage> imagesList;
-	private List<Member> membersList;
+	private string primaryImagePath;        //Đường dẫn ảnh chính
+	private BindingList<TripImage> imagesList = new BindingList<TripImage>();
+	private BindingList<Member> membersList = new BindingList<Member>();
 
+	public int TripID
+	{
+		get
+		{
+			return tripID;
+		}
+		set
+		{
+			tripID = value;
+			OnPropertyChanged("TripID");
+		}
+	}
 	public string TripName
 	{
 		get
@@ -66,21 +78,6 @@ public class Trip : INotifyPropertyChanged
 			}
 		}
 	}
-	public bool IsFavorite
-	{
-		get
-		{
-			return isFavorite;
-		}
-		set
-		{
-			isFavorite = value;
-			if (PropertyChanged != null)
-			{
-				PropertyChanged(this, new PropertyChangedEventArgs("IsFavorite"));
-			}
-		}
-	}
 	public BindingList<TripImage> ImagesList
 	{
 		get
@@ -93,7 +90,7 @@ public class Trip : INotifyPropertyChanged
 			OnPropertyChanged("ImagesList");
 		}
 	}
-	public List<Member> MembersList
+	public BindingList<Member> MembersList
 	{
 		get
 		{
