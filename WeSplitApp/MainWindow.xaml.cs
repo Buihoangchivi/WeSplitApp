@@ -933,9 +933,11 @@ namespace WeSplitApp
 			}*/
 		}
 
-		//---------------------------------------- Các hàm xử lý khác --------------------------------------------//
+        
 
-		private void TripListAppearAnimation()
+        //---------------------------------------- Các hàm xử lý khác --------------------------------------------//
+
+        private void TripListAppearAnimation()
 		{
 			ThicknessAnimation animation = new ThicknessAnimation();
 			animation.AccelerationRatio = 0.9;
@@ -945,22 +947,6 @@ namespace WeSplitApp
 			TripListGrid.BeginAnimation(Grid.MarginProperty, animation);
 		}
 
-		private void ChargePie_Loaded(object sender, RoutedEventArgs e)
-		{
-			ChargePie.Series = new SeriesCollection();
-			var tooltip = (DefaultTooltip)ChargePie.DataTooltip;
-			((DefaultTooltip)ChargePie.DataTooltip).SelectionMode = TooltipSelectionMode.OnlySender;
-			foreach (var member in trip.MembersList)
-			{
-				ChargePie.Series.Add(
-						new PieSeries()
-						{
-							Values = new ChartValues<decimal> { member.CostsList.Sum(value => value.Charge) },
-							Title = member.MemberName,
-						}
-					); ;
-			}
-		}
 
 		private void ChargePie_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
@@ -976,6 +962,25 @@ namespace WeSplitApp
 						}
 					); ;
 			}
+		}
+
+		private void ChargeChart_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+		{
+			ChargeChart.Series = new SeriesCollection();
+			((DefaultTooltip)ChargeChart.DataTooltip).SelectionMode = TooltipSelectionMode.OnlySender;
+			ChargeChart.AxisY = new AxesCollection();
+			foreach (var member in trip.MembersList)
+			{
+				foreach(var cost in member.CostsList)
+                {
+					ChargeChart.Series.Add(new ColumnSeries()
+					{
+						Values = new ChartValues<decimal> { cost.Charge },
+						Title = cost.PaymentName
+					}); ;
+                }
+			}
+
 		}
 	}
 }

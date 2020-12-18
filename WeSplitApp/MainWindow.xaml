@@ -657,7 +657,11 @@
                            FontWeight="Bold" Text="BIỂU ĐỒ KHOẢN CHI" VerticalAlignment="Top"
                                Foreground="{DynamicResource ColorScheme}"/>
 
-                    
+                    <lvc:CartesianChart LegendLocation="Bottom" Grid.Row="1" Name="ChargeChart" IsVisibleChanged="ChargeChart_IsVisibleChanged">
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis Title="Chi phí"></lvc:Axis>
+                        </lvc:CartesianChart.AxisY>
+                    </lvc:CartesianChart>
 
                 </Grid>
 
