@@ -119,7 +119,7 @@
 
         <!--Menu Control-->
         <StackPanel x:Name="ControlStackPanel" Grid.Row="1" Grid.RowSpan="2"
-                    Grid.Column="0" Background="#FFDDDDDD" Width="250" Visibility="Collapsed">
+                    Grid.Column="0" Background="#FFDDDDDD" Width="250">
 
             <Button Height="45" Name="MenuButton" Click="MenuButton_Click" BorderThickness="0" 
                     HorizontalContentAlignment="Left" Padding="0,1,1,1">
@@ -262,7 +262,7 @@
         </StackPanel>
 
         <!--Thanh để lọc loại thức ăn-->
-        <DockPanel Name="TypeBarDockPanel" Height="40" Margin="15,0" Grid.Row="1" Grid.Column="1" Visibility="Collapsed">
+        <DockPanel Name="TypeBarDockPanel" Height="40" Margin="15,0" Grid.Row="1" Grid.Column="1">
             <StackPanel Orientation="Horizontal" Width="590" DockPanel.Dock="Left">
                 <Button Height="40" Width="130" x:Name="AllButton" Click="ChangeClickedTypeButton_Click"
                         BorderThickness="0" Content="All" FontSize="15" Foreground="Gray">
@@ -419,7 +419,7 @@
         </DockPanel>
 
         <!--Hình ảnh và tên các món ăn-->
-        <ScrollViewer VerticalScrollBarVisibility="Hidden" Grid.Row="2" Grid.Column="1" Visibility="Collapsed">
+        <ScrollViewer VerticalScrollBarVisibility="Hidden" Grid.Row="2" Grid.Column="1">
             <Grid Name="TripListGrid">
                 <ItemsControl Grid.Row="1" Name="TripButtonItemsControl">
                     <ItemsControl.ItemsPanel>
@@ -492,7 +492,8 @@
 
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <!--Nút chỉnh sửa chuyến đi-->
-                    <Button BorderThickness="0" Height="35" Width="35">
+                    <Button BorderThickness="0" Height="35" Width="35"
+                            Name="EditTripButton" Click="EditTripButton_Click">
                         <Image Source="Images/editImage.png" Width="20" 
                            RenderOptions.BitmapScalingMode="HighQuality"></Image>
                     </Button>
@@ -617,7 +618,7 @@
         </Grid>
 
         <!--Thêm chuyến đi mới-->
-        <Grid Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Name="AddTripGrid">
+        <Grid Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Name="AddTripGrid" Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="60"/>
                 <RowDefinition Height="1.2*"/>
@@ -871,7 +872,7 @@
                 
                 <Button Name="AddMemeberButton" Foreground="White" Height="33"
                         Click="AddMemeberButton_Click" Margin="0,0,10,0"
-                        Background="{DynamicResource ColorScheme}">
+                        Background="{DynamicResource ColorScheme}" BorderThickness="0">
                     <Button.Resources>
                         <Style TargetType="Border">
                             <Setter Property="CornerRadius" Value="8"/>
