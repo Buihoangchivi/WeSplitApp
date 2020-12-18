@@ -12,8 +12,8 @@ public class Trip : INotifyPropertyChanged
 	private string location;
 	private string stage;
 	private string primaryImagePath;        //Đường dẫn ảnh chính
-	private BindingList<TripImage> imagesList = new BindingList<TripImage>();
-	private BindingList<Member> membersList = new BindingList<Member>();
+	private BindingList<TripImage> imagesList;
+	private BindingList<Member> membersList;
 
 	public int TripID
 	{
@@ -102,6 +102,46 @@ public class Trip : INotifyPropertyChanged
 			OnPropertyChanged("MembersList");
 		}
 	}
+	public Trip()
+    {
+		imagesList = new BindingList<TripImage>();
+		MembersList = new BindingList<Member>();
+    }
+
+	/*Phương thức khởi tạo để chỉnh sửa chuyến đi*/
+	public Trip(Trip oldTrip)
+    {
+		tripID = oldTrip.tripID;
+		tripName = string.Copy(oldTrip.TripName);
+		location = string.Copy(oldTrip.Location);
+		stage = string.Copy(oldTrip.Stage);
+		primaryImagePath = string.Copy(oldTrip.PrimaryImagePath);
+
+		imagesList = new BindingList<TripImage>();
+
+		foreach(var image in oldTrip.ImagesList)
+        {
+			imagesList.Add(new TripImage(image.ImagePath));
+        }
+
+		membersList = new BindingList<Member>();
+
+		foreach( var member in oldTrip.MembersList)
+        {
+			membersList.Add(new Member()
+			{
+				MemberName = string.Copy(member.MemberName)
+			});
+			foreach(var cost in member.CostsList)
+            {
+				membersList[membersList.Count - 1].CostsList.Add(new Cost()
+				{
+					Charge = cost.Charge,
+					PaymentName = cost.PaymentName
+				}); ;
+            }
+        }
+    }
 
 	#region INotifyPropertyChanged Members  
 

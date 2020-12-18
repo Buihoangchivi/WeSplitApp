@@ -35,8 +35,8 @@ namespace WeSplitApp
 		private BindingList<ColorSetting> ListColor;
 		private Condition FilterCondition = new Condition { Type = "" };
 		public Trip trip = new Trip();
-
-		private bool isMinimizeMenu, isEditMode, IsDetailTrip;
+		private bool isMinimizeMenu, isEditMode = true, IsDetailTrip;
+		int selectedTripIndex = 0;
 		/*private int TripPerPage = 12;           //Số chuyến đi mỗi trang
 		private int _totalPage = 0;             //Tổng số trang
 		public int TotalPage
@@ -226,11 +226,12 @@ namespace WeSplitApp
 			IsDetailTrip = false;
 
 			//Mặc định không ở chế độ chỉnh sửa chuyến đi
-			isEditMode = false;
+			isEditMode = true;
 
 			//Lấy danh sách food
 			//var trips = TripOnScreen.Take(TripPerPage);
-			AddTripGrid.DataContext = TripInfoList[0];
+			trip = new Trip(TripInfoList[0]);
+			AddTripGrid.DataContext = trip;
 			TripButtonItemsControl.ItemsSource = TripInfoList;
 			view = (CollectionView)CollectionViewSource.GetDefaultView(TripInfoList);
 			TripListAppearAnimation();
@@ -738,28 +739,41 @@ namespace WeSplitApp
 
 		private void AddChargeButton_Click(object sender, RoutedEventArgs e)
 		{
-			var b = ((Button)sender).DataContext as Member;
-			b.CostsList.Add(new Cost());
+			var member = ((Button)sender).DataContext as Member;
+			member.CostsList.Add(new Cost());
 		}
 
 		private void AddMemeberButton_Click(object sender, RoutedEventArgs e)
 		{
-			var b = ((Button)sender).DataContext as Trip;
-			b.MembersList.Add(new Member());
+			var selectedTrip = ((Button)sender).DataContext as Trip;
+			selectedTrip.MembersList.Add(new Member());
 
 		}
 
 		private void DeleteChargeButton_Click(object sender, RoutedEventArgs e)
 		{
-			var b = ((Button)sender).DataContext as Member;
-			b.CostsList.Remove(b.CostsList[b.CostsList.Count - 1]);
-
+			var member = ((Button)sender).DataContext as Member;
+			if (member.CostsList.Count >= 1)
+			{
+				member.CostsList.Remove(member.CostsList[member.CostsList.Count - 1]);
+			}
+            else
+            {
+				MessageBox.Show($"{member.MemberName} không còn khoản chi nào để xoá!", "Warning!!", MessageBoxButton.OK , MessageBoxImage.Warning);
+            }
 		}
 
 		private void DeleteMemeberButton_Click(object sender, RoutedEventArgs e)
 		{
-			var b = ((Button)sender).DataContext as Trip;
-			b.MembersList.Remove(b.MembersList[b.MembersList.Count - 1]);
+			var selectedTrip = ((Button)sender).DataContext as Trip;
+			if (selectedTrip.MembersList.Count >= 1)
+			{
+				selectedTrip.MembersList.Remove(selectedTrip.MembersList[selectedTrip.MembersList.Count - 1]);
+			}
+            else
+            {
+				MessageBox.Show("Không còn thành viên nào để xoá!", "Warning!!", MessageBoxButton.OK, MessageBoxImage.Warning);
+			}
 		}
 
 		private void DeleteImageButton_Click(object sender, RoutedEventArgs e)
@@ -772,7 +786,7 @@ namespace WeSplitApp
 
 			var fileDialog = new OpenFileDialog();
 			fileDialog.Multiselect = true;
-			fileDialog.Filter = "Image Files(*.JPG*;*.JPEG*)|*.JPG;*.JPEG*";
+			fileDialog.Filter = "Image Files(*.JPG*;*.JPEG*;*.PNG*)|*.JPG;*.JPEG*;*.PNG*";
 			fileDialog.Title = "Select Image";
 
 			if (fileDialog.ShowDialog() == true)
@@ -787,17 +801,47 @@ namespace WeSplitApp
 
 		private void SaveTripButton_Click(object sender, RoutedEventArgs e)
 		{
-			string appFolder = GetAppDomain();
-			for (int i = 0; i < trip.ImagesList.Count; i++)
+			if (!isEditMode)
 			{
-				var newImageName = $"Images/{trip.TripID}_{i}.jpg";
-				var newPath = appFolder + newImageName;
-				File.Copy(trip.ImagesList[i].ImagePath, newPath, true);
-
-				trip.ImagesList[i].ImagePath = newImageName;
+				string appFolder = GetAppDomain();
+				for (int i = 0; i < trip.ImagesList.Count; i++)
+				{
+					var imageExtension = System.IO.Path.GetExtension(trip.ImagesList[i].ImagePath);
+					var newImageName = $"Images/{trip.TripID}_{i}.{imageExtension}";
+					var newPath = appFolder + newImageName;
+					File.Copy(trip.ImagesList[i].ImagePath, newPath, true);
+					trip.ImagesList[i].ImagePath = newImageName;
+				}
+				trip.PrimaryImagePath = trip.ImagesList[0].ImagePath;
+				TripInfoList.Add(trip);
 			}
-			trip.PrimaryImagePath = trip.ImagesList[0].ImagePath;
-			TripInfoList.Add(trip);
+            else
+            {
+				string appFolder = GetAppDomain();
+				for (int i = 0; i < trip.ImagesList.Count; i++)
+				{
+					TripImage currentImage = trip.ImagesList[i];
+					var imageExtension = System.IO.Path.GetExtension(currentImage.ImagePath);
+					var newImageName = $"Images/{trip.TripID}_{i}{imageExtension}";
+					var newPath = appFolder + newImageName;
+					if (System.IO.Path.IsPathRooted(currentImage.ImagePath))
+					{
+						File.Copy(currentImage.ImagePath, newPath, true);
+						trip.ImagesList[i].ImagePath = newImageName;
+					}
+                    else
+                    {
+                        if (currentImage.ImagePath != TripInfoList[selectedTripIndex].ImagesList[i].ImagePath)
+                        {
+							File.Move(newPath, appFolder + currentImage.ImagePath);
+							currentImage.ImagePath = newImageName;
+                        }
+					}
+				}
+				trip.PrimaryImagePath = trip.ImagesList[0].ImagePath;
+				TripInfoList[selectedTripIndex] = trip;
+
+			}
 			//Đua vào list trip ở đây
 
 			/*

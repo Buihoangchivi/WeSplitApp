@@ -8,7 +8,7 @@ using System.ComponentModel;
 public class Member : INotifyPropertyChanged
 {
 	private string memberName;
-	private List<Cost> costsList;
+	private BindingList<Cost> costsList;
 
 	public string MemberName
 	{
@@ -22,7 +22,7 @@ public class Member : INotifyPropertyChanged
 			OnPropertyChanged("MemberName");
 		}
 	}
-	public List<Cost> CostsList
+	public BindingList<Cost> CostsList
 	{
 		get
 		{
@@ -35,6 +35,10 @@ public class Member : INotifyPropertyChanged
 		}
 	}
 
+	public Member()
+    {
+		costsList = new BindingList<Cost>();
+    }
 	#region INotifyPropertyChanged Members  
 
 	public event PropertyChangedEventHandler PropertyChanged;
