@@ -14,6 +14,9 @@
 
     <Window.Resources>
         <local:Converter x:Key="converter"/>
+        <local:SumChargeConverter x:Key="sumConverter"/>
+        <local:AverageChargeConverter x:Key="averageConverter"/>
+        <local:SummaryConverter x:Key="summaryConverter"/>
         <DataTemplate x:Key="groupingHeaderTemplate">
             <TextBlock Foreground ="{Binding ColorScheme}"
              FontWeight="Bold" FontSize="16"/>
@@ -683,8 +686,21 @@
                     <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="18" 
                            FontWeight="Bold" Text="TỔNG KẾT CHUYẾN ĐI" VerticalAlignment="Top"
                                Foreground="{DynamicResource ColorScheme}"/>
-
-                    
+                    <StackPanel Grid.Row="1">
+                        <TextBlock Text="{Binding MembersList, Converter={StaticResource sumConverter}}"></TextBlock>
+                        <TextBlock Name="AverageChargeTextBlock" Text="{Binding MembersList, Converter={StaticResource averageConverter}}"></TextBlock>
+                        <ListView ItemsSource="{Binding MembersList}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <DockPanel LastChildFill="True">
+                                        <TextBlock DockPanel.Dock="Left" Text="{Binding MemberName}"></TextBlock>
+                                        <TextBlock Name="memberSummaryTextBlock" IsVisibleChanged="memberSummaryTextBlock_IsVisibleChanged" Loaded="memberSummaryTextBlock_Loaded"></TextBlock>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            
+                        </ListView>
+                    </StackPanel>
 
                 </Grid>
 
@@ -849,15 +865,28 @@
                                     <ColumnDefinition Width="1*"/>
                                     <ColumnDefinition Width="2*"/>
                                 </Grid.ColumnDefinitions>
-                                <DockPanel LastChildFill="True">
-                                    <TextBlock DockPanel.Dock="Left" FontSize="15"
+                                <StackPanel>
+                                    <DockPanel LastChildFill="True">
+                                        <TextBlock DockPanel.Dock="Left" FontSize="15"
                                                Margin="0,10,0,0" FontWeight="Medium">Tên thành viên:</TextBlock>
-                                    <Border CornerRadius="7" BorderThickness="1.5" BorderBrush="Gray"
+                                        <Border CornerRadius="7" BorderThickness="1.5" BorderBrush="Gray"
                                             Height="30" Margin="5,5,0,0" VerticalAlignment="Top" Background="GhostWhite">
-                                        <TextBox Text="{Binding MemberName}" BorderThickness="0" FontSize="14" Background="{x:Null}"
+                                            <TextBox Text="{Binding MemberName}" BorderThickness="0" FontSize="14" Background="{x:Null}"
                                                  Margin="5,0" Height="25.5" VerticalContentAlignment="Center"/>
-                                    </Border>
-                                </DockPanel>
+                                        </Border>
+                                    </DockPanel>
+
+                                    <DockPanel LastChildFill="True" Margin="0,7,0,0">
+                                        <TextBlock DockPanel.Dock="Left" FontSize="15"
+                                               Margin="0,10,0,0" FontWeight="Medium">Tiền thu trước:</TextBlock>
+                                        <Border CornerRadius="7" BorderThickness="1.5" BorderBrush="Gray"
+                                            Height="30" Margin="8,5,0,0" VerticalAlignment="Top" Background="GhostWhite">
+                                            <TextBox Text="{Binding Deposits}" BorderThickness="0" FontSize="14" Background="{x:Null}"
+                                                 Margin="5,0" Height="25.5" VerticalContentAlignment="Center"/>
+                                        </Border>
+                                    </DockPanel>
+                                </StackPanel>
+                                
                                 <StackPanel Grid.Column="1">
                                     <ListView ItemsSource="{Binding CostsList}" MaxHeight="200"
                                               ScrollViewer.VerticalScrollBarVisibility="Hidden"

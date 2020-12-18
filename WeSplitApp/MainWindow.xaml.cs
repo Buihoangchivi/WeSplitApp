@@ -933,7 +933,9 @@ namespace WeSplitApp
 			}*/
 		}
 
-        
+
+
+
 
         //---------------------------------------- Các hàm xử lý khác --------------------------------------------//
 
@@ -948,7 +950,8 @@ namespace WeSplitApp
 		}
 
 
-		private void ChargePie_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+
+        private void ChargePie_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
 			ChargePie.Series = new SeriesCollection();
 			((DefaultTooltip)ChargePie.DataTooltip).SelectionMode = TooltipSelectionMode.OnlySender;
@@ -981,6 +984,21 @@ namespace WeSplitApp
                 }
 			}
 
+		}
+		private void memberSummaryTextBlock_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+		{
+			float averageCharge = float.Parse(AverageChargeTextBlock.Text);
+			var member = ((TextBlock)sender).DataContext as Member;
+			float res = member.Deposits - averageCharge;
+			((TextBlock)sender).Text = res.ToString();
+
+		}
+		private void memberSummaryTextBlock_Loaded(object sender, RoutedEventArgs e)
+		{
+			float averageCharge = float.Parse(AverageChargeTextBlock.Text);
+			var member = ((TextBlock)sender).DataContext as Member;
+			float res = member.Deposits - averageCharge;
+			((TextBlock)sender).Text = res.ToString();
 		}
 	}
 }

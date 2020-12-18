@@ -9,6 +9,7 @@ public class Member : INotifyPropertyChanged
 {
 	private string memberName;
 	private BindingList<Cost> costsList;
+	private int deposits;
 
 	public string MemberName
 	{
@@ -32,6 +33,19 @@ public class Member : INotifyPropertyChanged
 		{
 			costsList = value;
 			OnPropertyChanged("CostsList");
+		}
+	}
+
+	public int Deposits
+	{
+		get
+		{
+			return deposits;
+		}
+		set
+		{
+			deposits = value;
+			OnPropertyChanged("Deposits");
 		}
 	}
 
