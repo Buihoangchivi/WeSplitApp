@@ -800,11 +800,25 @@ namespace WeSplitApp
 			block.Background = Brushes.Transparent;
 			text.Foreground = Brushes.Black;
 
-			//Quay về màn hình Home
-			clickedControlButton = HomeButton;
-			TripListGrid.Visibility = Visibility.Visible;
-			TypeBarDockPanel.Visibility = Visibility.Visible;
-			ControlStackPanel.Visibility = Visibility.Visible;
+			if (isEditMode == true)
+			{
+				//Quay ve man hinh chi tiet
+				DetailTripGrid.Visibility = Visibility.Visible;
+				ControlStackPanel.Visibility = Visibility.Visible;
+
+				//Tắt chế độ chỉnh sửa
+				isEditMode = false;
+				IsDetailTrip = true;
+			}
+			else
+			{
+				//Quay về màn hình Home
+				clickedControlButton = HomeButton;
+				TripListGrid.Visibility = Visibility.Visible;
+				TypeBarDockPanel.Visibility = Visibility.Visible;
+				ControlStackPanel.Visibility = Visibility.Visible;
+			}
+
 			//Hiển thị màu cho nút Home
 			wrapPanel = (WrapPanel)HomeButton.Content;
 			collection = wrapPanel.Children;
@@ -812,9 +826,6 @@ namespace WeSplitApp
 			text = (TextBlock)collection[2];
 			block.Background = (SolidColorBrush)new BrushConverter().ConvertFromString(ColorScheme);
 			text.Foreground = block.Background;
-
-			//Tắt chế độ chỉnh sửa
-			isEditMode = false;
 
 			//Cập nhật lại giao diện
 			UpdateUIFromData();
@@ -843,6 +854,40 @@ namespace WeSplitApp
 				//UpdateFoodStatus();
 				isMinimizeMenu = false;
 			}
+		}
+
+		private void DeleteTripButton_Click(object sender, RoutedEventArgs e)
+		{
+			TripInfoList.Remove(TripInfoList[selectedTripIndex]);
+
+			//
+			DetailTripGrid.Visibility = Visibility.Collapsed;
+			//Tắt màu của nút Add
+			var wrapPanel = (WrapPanel)AddTripButton.Content;
+			var collection = wrapPanel.Children;
+			var block = (TextBlock)collection[0];
+			var text = (TextBlock)collection[2];
+			block.Background = Brushes.Transparent;
+			text.Foreground = Brushes.Black;
+
+			//Quay về màn hình Home
+			clickedControlButton = HomeButton;
+			TripListGrid.Visibility = Visibility.Visible;
+			TypeBarDockPanel.Visibility = Visibility.Visible;
+			ControlStackPanel.Visibility = Visibility.Visible;
+			//Hiển thị màu cho nút Home
+			wrapPanel = (WrapPanel)HomeButton.Content;
+			collection = wrapPanel.Children;
+			block = (TextBlock)collection[0];
+			text = (TextBlock)collection[2];
+			block.Background = (SolidColorBrush)new BrushConverter().ConvertFromString(ColorScheme);
+			text.Foreground = block.Background;
+
+			//Tắt chế độ chỉnh sửa
+			isEditMode = false;
+
+			//Cập nhật lại giao diện
+			UpdateUIFromData();
 		}
 
 		private void Trip_Click(object sender, RoutedEventArgs e)
@@ -1071,7 +1116,9 @@ namespace WeSplitApp
 			}
 		}
 
-		private void PreviewKeyUp_EnhanceTextBoxSearch(object sender, KeyEventArgs e)
+
+
+        private void PreviewKeyUp_EnhanceTextBoxSearch(object sender, KeyEventArgs e)
 		{
 			if (e.Key == Key.Back || e.Key == Key.Delete)
 			{

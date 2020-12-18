@@ -504,7 +504,7 @@
                     </Button>
 
                     <!--Nút xóa chuyến đi-->
-                    <Button Grid.Row="1" BorderThickness="0" Width="35" Height="35">
+                    <Button Grid.Row="1" BorderThickness="0" Width="35" Height="35" Name="DeleteTripButton" Click="DeleteTripButton_Click">
                         <Image Source="Images/deleteRecipe.png" Width="22"
                                        RenderOptions.BitmapScalingMode="HighQuality"></Image>
                     </Button>
