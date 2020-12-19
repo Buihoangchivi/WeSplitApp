@@ -302,11 +302,11 @@ namespace WeSplitApp
 			}
 			else if (button == ProcessingButton)
 			{
-				FilterCondition.Type = "Đang đi";
+				FilterCondition.Type = "Bắt đầu";
 			}
 			else if (button == AccomplishedButton)
 			{
-				FilterCondition.Type = "Đã hoàn thành";
+				FilterCondition.Type = "Kết thúc";
 			}
 			else
 			{
