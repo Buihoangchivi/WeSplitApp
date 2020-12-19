@@ -90,71 +90,6 @@ namespace WeSplitApp
 			{
 				TripInfoList = new List<Trip>();
 			}
-			/*TripOnScreen = TripInfoList;
-
-			//Khởi tạo phân trang
-			TotalPage = (TripInfoList.Count - 1) / TripPerPage + 1;
-			TotalItem = TripInfoList.Count.ToString();
-			if (TripInfoList.Count > 1)
-			{
-				TotalItem += " items";
-			}
-			else
-			{
-				TotalItem += " item";
-			}*/
-			//UpdatePageButtonStatus();
-
-			//         TripInfoList = new List<Trip>
-			//         {
-			//             new Trip
-			//             {
-			//                 TripName = "abc",
-			//                 Location = "Quang Nam",
-			//                 Stage = "abc",
-			//                 PrimaryImagePath = "Images\\1.jpg",
-			//                 IsFavorite = true,
-			//                // ImagesList = new List<string> { "Images\\2.jpg", "Images\\3.jpg" },
-			//                 MembersList = new List<Member>
-			//                 {
-			//                     new Member
-			//                     {
-			//                         MemberName = "Bui Van Vi",
-			//                         CostsList = new List<Cost>
-			//                         {
-			//                             new Cost
-			//                             {
-			//                                 PaymentName = "Com D2",
-			//                                 Charge = 20000
-			//                             },
-			//                             new Cost
-			//                             {
-			//                                 PaymentName = "Sua chua nha dam",
-			//                                 Charge = 7000
-			//                             }
-			//                         }
-			//                     },
-			//                     new Member
-			//                     {
-			//                         MemberName = "Pham Tan",
-			//                         CostsList = new List<Cost>
-			//                         {
-			//                             new Cost
-			//                             {
-			//                                 PaymentName = "Pho B5",
-			//                                 Charge = 22000
-			//                             },
-			//                             new Cost
-			//                             {
-			//                                 PaymentName = "Sua chua Long Thanh",
-			//                                 Charge = 6000
-			//                             }
-			//                         }
-			//                     }
-			//                 }
-			//             }
-			//         };
-			//DetailTripGrid.DataContext = TripInfoList[0];
 
 
 			this.DataContext = this;
@@ -217,16 +152,6 @@ namespace WeSplitApp
 			absolutePath = AppDomain.CurrentDomain.BaseDirectory;
 			return absolutePath;
 		}
-
-		//Lấy danh sách món ăn của view
-		//private void GetFilterList()
-		//{
-		//	TripOnScreen = new List<Trip>();
-		//	foreach (var trip in view)
-		//	{
-		//		TripOnScreen.Add((Trip)trip);
-		//	}
-		//}
 
 		//Lấy chỉ số phần tử của chuyến đi trong mảng
 		private int GetElementIndexInArray(Button button)
@@ -627,6 +552,8 @@ namespace WeSplitApp
 			block.Background = (SolidColorBrush)new BrushConverter().ConvertFromString(ColorScheme);
 			text.Foreground = block.Background;
 
+			clickedControlButton = HomeButton;
+
 			//Cập nhật lại giao diện
 			UpdateUIFromData();
 		}
@@ -788,37 +715,51 @@ namespace WeSplitApp
 
 		private void AverageChargeTextBlock_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
-			int sum = 0;
-			if (TripInfoList.Count > 0)
+			if (selectedTripIndex < TripInfoList.Count)
 			{
-				int count = TripInfoList[selectedTripIndex].MembersList.Count;
-				foreach (var member in TripInfoList[selectedTripIndex].MembersList)
+				int sum = 0;
+				if (TripInfoList.Count > 0)
 				{
-					foreach (var cost in member.CostsList)
+					int count = TripInfoList[selectedTripIndex].MembersList.Count;
+					foreach (var member in TripInfoList[selectedTripIndex].MembersList)
 					{
-						sum += cost.Charge;
+						foreach (var cost in member.CostsList)
+						{
+							sum += cost.Charge;
 
+						}
 					}
+					double res = 0;
+					if (count != 0)
+					{
+						res = (double)sum / count;
+					}
+					((TextBlock)sender).Text = ConvertMoneyUnit(res);
 				}
-				var res = (double)sum / count;
-				((TextBlock)sender).Text = ConvertMoneyUnit(res);
 			}
 		}
 
 		private void SumChargeTextBlock_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
-			int sum = 0;
-			if (TripInfoList.Count > 0)
+			if (selectedTripIndex < TripInfoList.Count)
 			{
-				foreach (var member in TripInfoList[selectedTripIndex].MembersList)
+				int sum = 0;
+				if (TripInfoList.Count > 0)
 				{
-					foreach (var cost in member.CostsList)
+					foreach (var member in TripInfoList[selectedTripIndex].MembersList)
 					{
-						sum += cost.Charge;
+						foreach (var cost in member.CostsList)
+						{
+							sum += cost.Charge;
 
+						}
 					}
+				((TextBlock)sender).Text = ConvertMoneyUnit(sum);
 				}
-			((TextBlock)sender).Text = ConvertMoneyUnit(sum);
+			}
+			else
+			{
+				//Do nothing
 			}
 		}
 
