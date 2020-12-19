@@ -17,6 +17,7 @@
         <local:SumChargeConverter x:Key="sumConverter"/>
         <local:AverageChargeConverter x:Key="averageConverter"/>
         <local:SummaryConverter x:Key="summaryConverter"/>
+        <local:WidthConverter x:Key="widthConverter"/>
         <DataTemplate x:Key="groupingHeaderTemplate">
             <TextBlock Foreground ="{Binding ColorScheme}"
              FontWeight="Bold" FontSize="16"/>
@@ -382,8 +383,8 @@
                                                                 <ColumnDefinition Width="70"/>
                                                                 <ColumnDefinition Width="149"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <!--<Image Grid.Column="0" Source="{Binding PrimaryImagePath, Converter={StaticResource converter}}" Width="70" Height="70" Stretch="Fill"-->
-                                                            <!--RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased" Margin="0"/>-->
+                                                            <Image Grid.Column="0" Source="{Binding PrimaryImagePath, Converter={StaticResource converter}}" Width="70" Height="70" Stretch="Fill"
+                                                            RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased" Margin="0"/>
                                                             <TextBlock Grid.Column="1" Text="{Binding TripName}" VerticalAlignment="Center"
                                                                        Margin="-10 0 0 0" FontSize="13" TextWrapping="Wrap" 
                                                                        Width="120"></TextBlock>
@@ -407,19 +408,21 @@
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
-                                <TextBox Name="searchTextBox" PreviewKeyDown="searchTextBox_PreviewKeyDown"
-                                         PreviewTextInput="searchTextBox_PreviewTextInput" FontSize="14"
+                                <TextBox Name="searchTextBox" PreviewKeyDown="searchTextBox_PreviewKeyDown" HorizontalAlignment="Left"
+                                         PreviewTextInput="searchTextBox_PreviewTextInput" FontSize="14" Width="223"
                                          PreviewKeyUp="PreviewKeyUp_EnhanceTextBoxSearch" VerticalContentAlignment="Center"
-                                         DataObject.Pasting="Pasting_EnhanceTextSearch" BorderThickness="0" Margin="0,0,14,0"/>
+                                         DataObject.Pasting="Pasting_EnhanceTextSearch" BorderThickness="0"/>
                             </Grid>
 
                         </StackPanel>
                     </DockPanel>
                 </Border>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <RadioButton Name="SearchFilter" IsChecked="True">Tên Thành Viên</RadioButton>
-                <RadioButton Margin="5 0 0 0">Địa điểm</RadioButton>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,5,10,0">
+                <RadioButton Name="SearchFilter" IsChecked="True" FontSize="14"
+                             VerticalContentAlignment="Center">Tên Thành Viên</RadioButton>
+                <RadioButton Margin="5 0 0 0" FontSize="14"
+                             VerticalContentAlignment="Center">Địa điểm</RadioButton>
             </StackPanel>
         </DockPanel>
 
@@ -559,11 +562,11 @@
                     <DockPanel Grid.Row="1" Grid.Column="1" LastChildFill="True" Margin="5,0,0,0">
 
                         <TextBlock DockPanel.Dock="Top" Text="Các thành viên:" FontSize="14" FontWeight="DemiBold" Margin="2,0,0,0"/>
-                        <ListView ItemsSource="{Binding MembersList}" BorderThickness="0" 
+                        <ListView ItemsSource="{Binding MembersList}" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                               ScrollViewer.CanContentScroll="False" ScrollViewer.VerticalScrollBarVisibility="Hidden" Background="{x:Null}">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding MemberName}" FontSize="14"/>
+                                    <TextBlock Text="{Binding MemberName}" FontSize="14" TextWrapping="Wrap"/>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
@@ -688,21 +691,51 @@
                     <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="18" 
                            FontWeight="Bold" Text="TỔNG KẾT CHUYẾN ĐI" VerticalAlignment="Top"
                                Foreground="{DynamicResource ColorScheme}"/>
-                    <StackPanel Grid.Row="1">
-                        <TextBlock Text="{Binding MembersList, Converter={StaticResource sumConverter}}"></TextBlock>
-                        <TextBlock Name="AverageChargeTextBlock" Text="{Binding MembersList, Converter={StaticResource averageConverter}}"></TextBlock>
-                        <ListView ItemsSource="{Binding MembersList}">
+                    <DockPanel Grid.Row="1" LastChildFill="True">
+                        <StackPanel DockPanel.Dock="Top">
+                            <DockPanel LastChildFill="True">
+
+                                <TextBlock FontSize="14.5" Foreground="Gray" Text="Tổng: " VerticalAlignment="Center"/>
+                                <TextBlock Text="Nhận lại" VerticalAlignment="Center" 
+                                           DockPanel.Dock="Right" Margin="3.5,0,3,0"/>
+                                <Label Background="ForestGreen" Width="4" DockPanel.Dock="Right" Margin="4,0,0,0"></Label>
+                                <TextBlock FontSize="14.5" Name="SumChargeTextBlock" 
+                                           FontWeight="DemiBold" VerticalAlignment="Center"
+                                           Loaded="SumChargeTextBlock_Loaded" DockPanel.Dock="Right"
+                                           IsVisibleChanged="SumChargeTextBlock_IsVisibleChanged"></TextBlock>
+                                <Label/>
+                            </DockPanel>
+                            <DockPanel LastChildFill="True">
+                                <TextBlock FontSize="14.5" Foreground="Gray" Text="Trung bình: " VerticalAlignment="Center"/>
+                                <TextBlock Text="Trả thêm" VerticalAlignment="Center" 
+                                           DockPanel.Dock="Right" Margin="1.7,0,3,0"/>
+                                <Label Background="Red" Width="4" DockPanel.Dock="Right" Margin="4,0,0,0"></Label>
+                                <TextBlock FontSize="14.5" Name="AverageChargeTextBlock" 
+                                           FontWeight="DemiBold" VerticalAlignment="Center"
+                                           Loaded="AverageChargeTextBlock_Loaded" DockPanel.Dock="Right"
+                                           IsVisibleChanged="AverageChargeTextBlock_IsVisibleChanged"></TextBlock>
+                                <Label/>
+                            </DockPanel>
+                        </StackPanel>
+                        <ListView ItemsSource="{Binding MembersList}" Background="{x:Null}"
+                                  BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <DockPanel LastChildFill="True">
-                                        <TextBlock DockPanel.Dock="Left" Text="{Binding MemberName}"></TextBlock>
-                                        <TextBlock Name="memberSummaryTextBlock" IsVisibleChanged="memberSummaryTextBlock_IsVisibleChanged" Loaded="memberSummaryTextBlock_Loaded"></TextBlock>
+                                    <DockPanel>
+                                        <TextBlock Text="{Binding MemberName}" FontSize="15"
+                                                   TextWrapping="Wrap" MaxWidth="80"/>
+                                        <TextBlock Text=":  " FontSize="15"/>
+                                        <TextBlock Name="memberSummaryTextBlock" FontSize="15"
+                                                   IsVisibleChanged="memberSummaryTextBlock_IsVisibleChanged"
+                                                   Loaded="memberSummaryTextBlock_Loaded"
+                                                   HorizontalAlignment="Right" VerticalAlignment="Center"/>
                                     </DockPanel>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                             
                         </ListView>
-                    </StackPanel>
+                    </DockPanel>
 
                 </Grid>
 
@@ -956,14 +989,6 @@
             <!--Hai nút thêm và xóa thành viên trong chuyến đi-->
             <StackPanel Grid.Row="5" Grid.Column="2" Orientation="Horizontal" 
                         HorizontalAlignment="Right">
-                <!--<Button Margin="0,0,0,5" Background="White" BorderThickness="0" Name="DeleteMemeberButton" 
-                        Click="DeleteMemeberButton_Click" Height="35" VerticalAlignment="Top">
-                    <WrapPanel Margin="15,0">
-                        <Image Source="Images/deleteRecipe.png" Width="20" Margin="0,0,5,0" 
-                                       RenderOptions.BitmapScalingMode="HighQuality"></Image>
-                        <TextBlock VerticalAlignment="Center" FontSize="15"  FontWeight="Medium">XÓA THÀNH VIÊN</TextBlock>
-                    </WrapPanel>
-                </Button>-->
                 <Button Name="DeleteMemeberButton" Foreground="{DynamicResource ColorScheme}" Height="33"
                         Click="DeleteMemeberButton_Click" Margin="0,0,10,0"
                         Background="White" BorderThickness="1.3" BorderBrush="{DynamicResource ColorScheme}">

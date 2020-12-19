@@ -803,6 +803,7 @@ namespace WeSplitApp
 			if (isEditMode == true)
 			{
 				//Quay ve man hinh chi tiet
+				DetailTripGrid.DataContext = TripInfoList[selectedTripIndex];
 				DetailTripGrid.Visibility = Visibility.Visible;
 				ControlStackPanel.Visibility = Visibility.Visible;
 
@@ -834,6 +835,7 @@ namespace WeSplitApp
 		private void EditTripButton_Click(object sender, RoutedEventArgs e)
 		{
 			isEditMode = true;
+			trip = new Trip(TripInfoList[selectedTripIndex]);
 			//Bật màn hình chỉnh sửa
 			ChangeClickedControlButton_Click(AddTripButton, null);
 		}
@@ -1033,37 +1035,95 @@ namespace WeSplitApp
 		}
 		private void memberSummaryTextBlock_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
-			float averageCharge = float.Parse(AverageChargeTextBlock.Text);
-			var member = ((TextBlock)sender).DataContext as Member;
-			float res = member.Deposits - averageCharge;
-			((TextBlock)sender).Text = res.ToString();
-
+			var index = AverageChargeTextBlock.Text.IndexOf(" ");
+			if (index != -1)
+			{
+				double averageCharge = double.Parse(AverageChargeTextBlock.Text.Substring(0, index));
+				var member = ((TextBlock)sender).DataContext as Member;
+				averageCharge *= ConvertUnitStringIntoInt(AverageChargeTextBlock.Text.Substring(index + 1));
+				double res = member.Deposits - averageCharge;
+				((TextBlock)sender).Text = ConvertMoneyUnit(res);
+				if (res < 0)
+				{
+					((TextBlock)sender).Foreground = Brushes.Red;
+				}
+				else
+				{
+					((TextBlock)sender).Foreground = Brushes.ForestGreen;
+				}
+			}
+			
 		}
+
+		private void AverageChargeTextBlock_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+		{
+			int sum = 0;
+			int count = TripInfoList[selectedTripIndex].MembersList.Count;
+			foreach (var member in TripInfoList[selectedTripIndex].MembersList)
+			{
+				foreach (var cost in member.CostsList)
+				{
+					sum += cost.Charge;
+
+				}
+			}
+			var res = (double)sum / count;
+			((TextBlock)sender).Text = ConvertMoneyUnit(res);
+		}
+
+		private void SumChargeTextBlock_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+		{
+			int sum = 0;
+			foreach (var member in TripInfoList[selectedTripIndex].MembersList)
+			{
+				foreach (var cost in member.CostsList)
+				{
+					sum += cost.Charge;
+
+				}
+			}
+			((TextBlock)sender).Text = ConvertMoneyUnit(sum);
+		}
+
 		private void memberSummaryTextBlock_Loaded(object sender, RoutedEventArgs e)
 		{
-			float averageCharge = float.Parse(AverageChargeTextBlock.Text);
-			var member = ((TextBlock)sender).DataContext as Member;
-			float res = member.Deposits - averageCharge;
-			((TextBlock)sender).Text = res.ToString();
+			memberSummaryTextBlock_IsVisibleChanged(sender, new DependencyPropertyChangedEventArgs());
 		}
 
+		private void AverageChargeTextBlock_Loaded(object sender, RoutedEventArgs e)
+		{
+			AverageChargeTextBlock_IsVisibleChanged(sender, new DependencyPropertyChangedEventArgs());
+		}
+
+		private void SumChargeTextBlock_Loaded(object sender, RoutedEventArgs e)
+		{
+			SumChargeTextBlock_IsVisibleChanged(sender, new DependencyPropertyChangedEventArgs());
+		}
 
 		/*tim kiem*/
 		private string ConvertToUnSign(string input)
 		{
-			input = input.Trim();
-			for (int i = 0x20; i < 0x30; i++)
+			if (input != null)
 			{
-				input = input.Replace(((char)i).ToString(), " ");
+				input = input.Trim();
+				for (int i = 0x20; i < 0x30; i++)
+				{
+					input = input.Replace(((char)i).ToString(), " ");
+				}
+				Regex regex = new Regex(@"\p{IsCombiningDiacriticalMarks}+");
+				string str = input.Normalize(NormalizationForm.FormD);
+				string str2 = regex.Replace(str, string.Empty).Replace('đ', 'd').Replace('Đ', 'D');
+				while (str2.IndexOf("?") >= 0)
+				{
+					str2 = str2.Remove(str2.IndexOf("?"), 1);
+				}
+				return str2;
 			}
-			Regex regex = new Regex(@"\p{IsCombiningDiacriticalMarks}+");
-			string str = input.Normalize(NormalizationForm.FormD);
-			string str2 = regex.Replace(str, string.Empty).Replace('đ', 'd').Replace('Đ', 'D');
-			while (str2.IndexOf("?") >= 0)
+			else
 			{
-				str2 = str2.Remove(str2.IndexOf("?"), 1);
+				var res = "";
+				return res;
 			}
-			return str2;
 		}
 
 		private void searchTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -1116,9 +1176,7 @@ namespace WeSplitApp
 			}
 		}
 
-
-
-        private void PreviewKeyUp_EnhanceTextBoxSearch(object sender, KeyEventArgs e)
+		private void PreviewKeyUp_EnhanceTextBoxSearch(object sender, KeyEventArgs e)
 		{
 			if (e.Key == Key.Back || e.Key == Key.Delete)
 			{
@@ -1197,6 +1255,42 @@ namespace WeSplitApp
 			{
 				searchComboBox.ItemsSource = TripInfoList;
 			}
+		}
+
+		private string ConvertMoneyUnit(double value)
+		{
+			var unit = "";
+			if (Math.Abs(value) < 1000)
+			{
+				unit = " Đồng";
+			}
+			else if (Math.Abs(value) < 1000000)
+			{
+				value /= 1000;
+				unit = " Nghìn";
+			}
+			else if (Math.Abs(value) < 1000000000)
+			{
+				value /= 1000000;
+				unit = " Triệu";
+			}
+			value = Math.Abs(Math.Round(value, 2));
+			var res = value.ToString() + unit;
+			return res;
+		}
+
+		private int ConvertUnitStringIntoInt(string unit)
+		{
+			var res = 1;
+			if (unit == "Nghìn")
+			{
+				res = 1000;
+			}
+			else if (unit == "Triệu")
+			{
+				res = 1000000;
+			}
+			return res;
 		}
 	}
 }

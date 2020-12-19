@@ -64,6 +64,7 @@
     <Compile Include="AverageChargeConverter.cs" />
     <Compile Include="SummaryConverter.cs" />
     <Compile Include="SumChargeConverter.cs" />
+    <Compile Include="WidthConverter.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
