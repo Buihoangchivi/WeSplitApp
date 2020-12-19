@@ -917,7 +917,7 @@
                                         <Border CornerRadius="7" BorderThickness="1.5" BorderBrush="Gray"
                                             Height="30" Margin="8,5,0,0" VerticalAlignment="Top" Background="GhostWhite">
                                             <TextBox Text="{Binding Deposits}" BorderThickness="0" FontSize="14" Background="{x:Null}"
-                                                 Margin="5,0" Height="25.5" VerticalContentAlignment="Center"/>
+                                                 Margin="5,0" Height="25.5" VerticalContentAlignment="Center" PreviewTextInput="NumberTextBox_PreviewTextInput"/>
                                         </Border>
                                     </DockPanel>
                                 </StackPanel>
@@ -951,7 +951,7 @@
                                                                 Height="30" Margin="5,2,0,0" VerticalAlignment="Top" Background="GhostWhite">
                                                             <TextBox Text="{Binding Charge}" BorderThickness="0" FontSize="14" 
                                                                      Background="{x:Null}" Margin="5,0" Height="25.5"
-                                                                     VerticalContentAlignment="Center"/>
+                                                                     VerticalContentAlignment="Center" PreviewTextInput="NumberTextBox_PreviewTextInput"/>
                                                         </Border>
                                                     </DockPanel>
                                                 </Grid>

@@ -307,6 +307,23 @@ namespace WeSplitApp
 			return result;
 		}
 
+		private int GetMinID()
+		{
+			int result = 1;
+			for (int i = 0; i < TripInfoList.Count; i++)
+			{
+				if (result < TripInfoList[i].TripID)
+				{
+					break;
+				}
+				else
+				{
+					result++;
+				}
+			}
+			return result;
+		}
+
 		//---------------------------------------- Các hàm lưu trữ dữ liệu --------------------------------------------//
 
 		//Lưu lại danh sách món ăn
@@ -472,7 +489,8 @@ namespace WeSplitApp
 				ControlStackPanel.Visibility = Visibility.Collapsed;
 				if (isEditMode == false)
 				{
-					trip = new Trip();
+					int newID = GetMinID();
+					trip = new Trip() { TripID = newID, Stage = "Bắt đầu"};
 				}
 				AddTripGrid.DataContext = trip;
 			}
@@ -1036,53 +1054,61 @@ namespace WeSplitApp
 		private void memberSummaryTextBlock_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
 			var index = AverageChargeTextBlock.Text.IndexOf(" ");
-			if (index != -1)
+			if (TripInfoList.Count > 0)
 			{
-				double averageCharge = double.Parse(AverageChargeTextBlock.Text.Substring(0, index));
-				var member = ((TextBlock)sender).DataContext as Member;
-				averageCharge *= ConvertUnitStringIntoInt(AverageChargeTextBlock.Text.Substring(index + 1));
-				double res = member.Deposits - averageCharge;
-				((TextBlock)sender).Text = ConvertMoneyUnit(res);
-				if (res < 0)
+				if (index != -1)
 				{
-					((TextBlock)sender).Foreground = Brushes.Red;
-				}
-				else
-				{
-					((TextBlock)sender).Foreground = Brushes.ForestGreen;
+					double averageCharge = double.Parse(AverageChargeTextBlock.Text.Substring(0, index));
+					var member = ((TextBlock)sender).DataContext as Member;
+					averageCharge *= ConvertUnitStringIntoInt(AverageChargeTextBlock.Text.Substring(index + 1));
+					double res = member.Deposits - averageCharge;
+					((TextBlock)sender).Text = ConvertMoneyUnit(res);
+					if (res < 0)
+					{
+						((TextBlock)sender).Foreground = Brushes.Red;
+					}
+					else
+					{
+						((TextBlock)sender).Foreground = Brushes.ForestGreen;
+					}
 				}
 			}
-			
 		}
 
 		private void AverageChargeTextBlock_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
 			int sum = 0;
-			int count = TripInfoList[selectedTripIndex].MembersList.Count;
-			foreach (var member in TripInfoList[selectedTripIndex].MembersList)
+			if (TripInfoList.Count > 0)
 			{
-				foreach (var cost in member.CostsList)
+				int count = TripInfoList[selectedTripIndex].MembersList.Count;
+				foreach (var member in TripInfoList[selectedTripIndex].MembersList)
 				{
-					sum += cost.Charge;
+					foreach (var cost in member.CostsList)
+					{
+						sum += cost.Charge;
 
+					}
 				}
+				var res = (double)sum / count;
+				((TextBlock)sender).Text = ConvertMoneyUnit(res);
 			}
-			var res = (double)sum / count;
-			((TextBlock)sender).Text = ConvertMoneyUnit(res);
 		}
 
 		private void SumChargeTextBlock_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
 			int sum = 0;
-			foreach (var member in TripInfoList[selectedTripIndex].MembersList)
+			if (TripInfoList.Count > 0)
 			{
-				foreach (var cost in member.CostsList)
+				foreach (var member in TripInfoList[selectedTripIndex].MembersList)
 				{
-					sum += cost.Charge;
+					foreach (var cost in member.CostsList)
+					{
+						sum += cost.Charge;
 
+					}
 				}
-			}
 			((TextBlock)sender).Text = ConvertMoneyUnit(sum);
+			}
 		}
 
 		private void memberSummaryTextBlock_Loaded(object sender, RoutedEventArgs e)
@@ -1255,6 +1281,53 @@ namespace WeSplitApp
 			{
 				searchComboBox.ItemsSource = TripInfoList;
 			}
+		}
+
+		private void searchComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			int index = searchComboBox.SelectedIndex;
+			if (index >= 0)
+			{
+				var selectedTrip = searchComboBox.SelectedItem as Trip;
+				string textSelected = selectedTrip.TripName;
+				searchTextBox.Text = textSelected;
+			}
+
+
+		}
+
+		public override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+			KeyUp += OnKeyUp;
+		}
+
+		void OnKeyUp(object sender, KeyEventArgs e)
+		{
+
+			if (e.Key == Key.Enter)
+			{
+				if (searchComboBox.SelectedIndex >= 0)
+				{
+					Button button = new Button();
+					button.DataContext = searchComboBox.SelectedItem as Trip;
+					button.Content = "button";
+					searchComboBox.SelectedIndex = -1;
+					SearchFoodButton_Click(button, null);
+
+				}
+
+			}
+		}
+
+        private void NumberTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+			e.Handled = Regex.IsMatch(e.Text, "[^0-9]+");
+		}
+
+        private void SearchFoodButton_Click(object sender, RoutedEventArgs e)
+		{
+			Trip_Click(sender, null);
 		}
 
 		private string ConvertMoneyUnit(double value)
