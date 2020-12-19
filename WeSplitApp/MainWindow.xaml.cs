@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -26,7 +27,7 @@ namespace WeSplitApp
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
-	public partial class MainWindow : Window
+	public partial class MainWindow : Window, INotifyPropertyChanged
 	{
 		//---------------------------------------- Khai báo các biến toàn cục --------------------------------------------//
 
@@ -57,6 +58,7 @@ namespace WeSplitApp
 				}
 			}
 		}
+
 
 		//---------------------------------------- Khai báo các class --------------------------------------------//
 
@@ -166,13 +168,12 @@ namespace WeSplitApp
 				new ColorSetting { Color = "#FF0063B1"}, new ColorSetting { Color = "#FF6B69D6"}, new ColorSetting { Color = "#FF8E8CD8"}, new ColorSetting { Color = "#FF8764B8"}, new ColorSetting { Color = "#FF038387"},
 				new ColorSetting { Color = "#FF525E54"}, new ColorSetting { Color = "#FF7E735F"}, new ColorSetting { Color = "#FF9E9E9E"}, new ColorSetting { Color = "#FF515C6B"}, new ColorSetting { Color = "#FF000000"}
 			};
-			ColorScheme = ListColor[11].Color;
 
-			//Danh sách các giai đoạn của chuyến đi
-			//StageList = new BindingList<string>
-			//{
-			//	"Bắt đầu", "Đang đi", "Đến nơi", "Đang về", "Kết thúc"
-			//};
+			//Binding dữ liệu màu cho Setting Color Table
+			SettingColorItemsControl.ItemsSource = ListColor;
+
+			//
+			ColorScheme = ConfigurationManager.AppSettings["ColorScheme"];
 
 			//Mặc định khi mở ứng dụng thị hiển thị menu ở dạng mở rộng
 			isMinimizeMenu = false;
@@ -293,6 +294,10 @@ namespace WeSplitApp
 		private void CloseButton_Click(object sender, RoutedEventArgs e)
 		{
 			SaveListFood();
+			var config = ConfigurationManager.OpenExeConfiguration(
+				ConfigurationUserLevel.None);
+			config.AppSettings.Settings["ColorScheme"].Value = ColorScheme;
+			config.Save(ConfigurationSaveMode.Minimal);
 			Application.Current.Shutdown();
 
 		}
@@ -397,21 +402,28 @@ namespace WeSplitApp
 			block.Background = Brushes.Transparent;
 			text.Foreground = Brushes.Black;
 
+			//Đóng giao diện thanh chọn loại và tìm kiếm
+			TypeBarDockPanel.Visibility = Visibility.Collapsed;
+			//Đóng giao diện menu
+			ControlStackPanel.Visibility = Visibility.Collapsed;
+			//Đóng giao diện màn hình chi tiết chuyến đi
+			DetailTripGrid.Visibility = Visibility.Collapsed;
+			//Đóng giao diện màn hình trang chủ
+			TripListGrid.Visibility = Visibility.Collapsed;
+			//Đóng giao diện màn hình thêm chuyến đi mới
+			AddTripGrid.Visibility = Visibility.Collapsed;
+			//Đóng giao diện màn hình cài đặt
+			SettingStackPanel.Visibility = Visibility.Collapsed;
+			//Đóng giao diện thông tin developer
+			AboutStackPanel.Visibility = Visibility.Collapsed;
+
 			if (IsDetailTrip == true)
 			{
-				//Đóng giao diện màn hình chi tiết chuyến đi
-				DetailTripGrid.Visibility = Visibility.Collapsed;
 				IsDetailTrip = false;
 			}
-			else if (clickedControlButton == HomeButton)
-			{
-				//Đóng giao diện màn hình trang chủ
-				TripListGrid.Visibility = Visibility.Collapsed;
-			}
-			else if (clickedControlButton == AddTripButton)
-			{
-				//Đóng giao diện màn hình thêm chuyến đi mới
-				AddTripGrid.Visibility = Visibility.Collapsed;
+			else
+			{ 
+				//Do nothing
 			}
 
 			//Hiển thị màu cho nút vừa được nhấn
@@ -436,14 +448,22 @@ namespace WeSplitApp
 			else if (button == AddTripButton)
 			{
 				AddTripGrid.Visibility = Visibility.Visible;
-				TypeBarDockPanel.Visibility = Visibility.Collapsed;
-				ControlStackPanel.Visibility = Visibility.Collapsed;
 				if (isEditMode == false)
 				{
 					int newID = GetMinID();
 					trip = new Trip() { TripID = newID, Stage = "Bắt đầu"};
 				}
 				AddTripGrid.DataContext = trip;
+			}
+			else if (button == SettingButton)
+			{
+				SettingStackPanel.Visibility = Visibility.Visible;
+				ControlStackPanel.Visibility = Visibility.Visible;
+			}
+			else if (button == AboutButton)
+			{
+				AboutStackPanel.Visibility = Visibility.Visible;
+				ControlStackPanel.Visibility = Visibility.Visible;
 			}
 
 			//Cập nhật lại giao diện
@@ -1016,7 +1036,50 @@ namespace WeSplitApp
 			e.Handled = Regex.IsMatch(e.Text, "[^0-9]+");
 		}
 
-        private void SearchTripButton_Click(object sender, RoutedEventArgs e)
+		private void ColorButton_Click(object sender, RoutedEventArgs e)
+		{
+			var datatContex = (sender as Button).DataContext;
+			var color = (datatContex as ColorSetting).Color;
+			ColorScheme = color;
+			TitleBar.Background = (SolidColorBrush)new BrushConverter().ConvertFromString(ColorScheme);
+			SettingTextBlock.Background = TitleBar.Background;
+			clickedTypeButton.Foreground = TitleBar.Background;
+			SettingTitleTextBlock.Foreground = SettingTextBlock.Background;
+		}
+
+		private void ShowSplashScreenCheckBox_Checked(object sender, RoutedEventArgs e)
+		{
+			var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+			config.AppSettings.Settings["ShowSplashScreen"].Value = "true";
+			config.Save(ConfigurationSaveMode.Minimal);
+		}
+
+		private void ShowSplashScreenCheckBox_Unchecked(object sender, RoutedEventArgs e)
+		{
+			var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+			config.AppSettings.Settings["ShowSplashScreen"].Value = "false";
+			config.Save(ConfigurationSaveMode.Minimal);
+		}
+
+		private void DeleteTextInSearchButton_Click(object sender, RoutedEventArgs e)
+		{
+			searchTextBox.Text = "";
+			searchTextBox.Focus();
+		}
+
+		private void DeleteTextInSearchButton_MouseEnter(object sender, MouseEventArgs e)
+		{
+			if (e.LeftButton == MouseButtonState.Pressed)
+			{
+				DeleteTextInSearchButton_Click(null, null);
+			}
+			else
+			{
+				//Do nothing
+			}
+		}
+
+		private void SearchTripButton_Click(object sender, RoutedEventArgs e)
 		{
 			Trip_Click(sender, null);
 		}
