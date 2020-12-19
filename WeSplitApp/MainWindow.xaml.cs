@@ -384,6 +384,12 @@ namespace WeSplitApp
 			{
 				SettingStackPanel.Visibility = Visibility.Visible;
 				ControlStackPanel.Visibility = Visibility.Visible;
+				var value = ConfigurationManager.AppSettings["ShowSplashScreen"];
+				bool showSplashStatus = bool.Parse(value);
+				if (showSplashStatus == true)
+				{
+					ShowSplashScreenCheckBox.IsChecked = true;
+				}
 			}
 			else if (button == AboutButton)
 			{
