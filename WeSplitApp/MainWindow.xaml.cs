@@ -471,7 +471,7 @@ namespace WeSplitApp
 				for (int i = 0; i < trip.ImagesList.Count; i++)
 				{
 					var imageExtension = System.IO.Path.GetExtension(trip.ImagesList[i].ImagePath);
-					var newImageName = $"Images/{trip.TripID}_{i}.{imageExtension}";
+					var newImageName = $"Images/{trip.TripID}_{i}{imageExtension}";
 					var newPath = appFolder + newImageName;
 					File.Copy(trip.ImagesList[i].ImagePath, newPath, true);
 					trip.ImagesList[i].ImagePath = newImageName;
