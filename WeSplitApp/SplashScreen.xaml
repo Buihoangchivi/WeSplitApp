@@ -63,14 +63,14 @@
                            FontSize="50"
                            Foreground="#f0f2f1"
                            HorizontalAlignment="Center"
-                           Text="FOOD RECIPES"/>
+                           Text="WE SPLIT"/>
                 <TextBlock DockPanel.Dock="Top"
                            Margin="10 0 10 -20"
                            FontFamily="Segoe UI Semibold"
                            FontSize="30"
                            Foreground="White"
                            HorizontalAlignment="Center"
-                           Text="Welcome to Food Recipes App"/>
+                           Text="Welcome to We Split App"/>
                 <TextBlock DockPanel.Dock="Top"
                            Margin="15 0 10 50"
                            FontFamily="Segoe UI Semibold"
