@@ -103,14 +103,14 @@ public class Trip : INotifyPropertyChanged
 		}
 	}
 	public Trip()
-    {
+	{
 		imagesList = new BindingList<TripImage>();
 		MembersList = new BindingList<Member>();
-    }
+	}
 
 	/*Phương thức khởi tạo để chỉnh sửa chuyến đi*/
 	public Trip(Trip oldTrip)
-    {
+	{
 		tripID = oldTrip.tripID;
 		tripName = string.Copy(oldTrip.TripName);
 		location = string.Copy(oldTrip.Location);
@@ -119,15 +119,15 @@ public class Trip : INotifyPropertyChanged
 
 		imagesList = new BindingList<TripImage>();
 
-		foreach(var image in oldTrip.ImagesList)
-        {
+		foreach (var image in oldTrip.ImagesList)
+		{
 			imagesList.Add(new TripImage(image.ImagePath));
-        }
+		}
 
 		membersList = new BindingList<Member>();
 
-		foreach( var member in oldTrip.MembersList)
-        {
+		foreach (var member in oldTrip.MembersList)
+		{
 			if (member.MemberName != null)
 			{
 				membersList.Add(new Member()
@@ -135,23 +135,27 @@ public class Trip : INotifyPropertyChanged
 					MemberName = string.Copy(member.MemberName)
 				});
 			}
-            else
-            {
+			else
+			{
 				membersList.Add(new Member()
 				{
 					MemberName = ""
 				});
 			}
-			foreach(var cost in member.CostsList)
-            {
+
+
+			membersList[membersList.Count - 1].Deposits = int.Parse(member.Deposits.ToString());
+
+			foreach (var cost in member.CostsList)
+			{
 				membersList[membersList.Count - 1].CostsList.Add(new Cost()
 				{
 					Charge = cost.Charge,
 					PaymentName = cost.PaymentName
 				}); ;
-            }
-        }
-    }
+			}
+		}
+	}
 
 	#region INotifyPropertyChanged Members  
 

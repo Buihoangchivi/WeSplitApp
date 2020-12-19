@@ -118,7 +118,7 @@
         </DockPanel>
 
         <!--Menu Control-->
-        <StackPanel x:Name="ControlStackPanel" Grid.Row="1" Grid.RowSpan="2"
+        <StackPanel x:Name="ControlStackPanel" Grid.Row="1" Grid.RowSpan="2" Visibility="Visible"
                     Grid.Column="0" Background="#FFDDDDDD" Width="250">
 
             <Button Height="45" Name="MenuButton" Click="MenuButton_Click" BorderThickness="0" 
@@ -262,8 +262,8 @@
         </StackPanel>
 
         <!--Thanh để lọc loại thức ăn-->
-        <DockPanel Name="TypeBarDockPanel" Height="40" Margin="15,0" Grid.Row="1" Grid.Column="1">
-            <StackPanel Orientation="Horizontal" Width="590" DockPanel.Dock="Left">
+                <DockPanel Name="TypeBarDockPanel" Height="40" Margin="15,0" Grid.Row="1" Grid.Column="1" Visibility="Visible">
+            <StackPanel Orientation="Horizontal" Width="400" DockPanel.Dock="Left">
                 <Button Height="40" Width="130" x:Name="AllButton" Click="ChangeClickedTypeButton_Click"
                         BorderThickness="0" Content="All" FontSize="15" Foreground="Gray">
                     <Button.Style>
@@ -336,8 +336,8 @@
                     <DockPanel LastChildFill="True">
                         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
                             <Button Name="DeleteTextInSearchButton" Width="30" BorderThickness="0" Padding="8"
-                                    Background="White" Height="29" 
-                                    >
+                                    Background="White" Height="29" Click="DeleteTextInSearchButton_Click"
+                                    MouseEnter="DeleteTextInSearchButton_MouseEnter">
                                 <Image Source="Images/deleteText.png" RenderOptions.BitmapScalingMode="HighQuality"></Image>
                             </Button>
                         </StackPanel>
@@ -372,16 +372,16 @@
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
-                                                <Button BorderThickness="0" Width="226" Background="White">
+                                                <Button BorderThickness="0" Width="226" Background="White" Click="SearchTripButton_Click">
                                                     <Button.Content>
                                                         <Grid>
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="70"/>
                                                                 <ColumnDefinition Width="149"/>
                                                             </Grid.ColumnDefinitions>
-                                                            <!--<Image Grid.Column="0" Source="{Binding PrimaryImagePath, Converter={StaticResource converter}}" Width="70" Height="70" Stretch="Fill"-->
-                                                            <!--RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased" Margin="0"/>-->
-                                                            <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center"
+                                                            <Image Grid.Column="0" Source="{Binding PrimaryImagePath, Converter={StaticResource converter}}" Width="70" Height="70" Stretch="Fill"
+                                                            RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased" Margin="0"/>
+                                                            <TextBlock Grid.Column="1" Text="{Binding TripName}" VerticalAlignment="Center"
                                                                        Margin="-10 0 0 0" FontSize="13" TextWrapping="Wrap" 
                                                                        Width="120"></TextBlock>
                                                         </Grid>
@@ -404,22 +404,26 @@
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
-                                <TextBox Name="searchTextBox"
-                                         Width="223" HorizontalAlignment="Left"
-                                         FontSize="14"
-                                         VerticalContentAlignment="Center"
-                                         BorderThickness="0"></TextBox>
+                                <TextBox Name="searchTextBox" PreviewKeyDown="searchTextBox_PreviewKeyDown" HorizontalAlignment="Left"
+                                         PreviewTextInput="searchTextBox_PreviewTextInput" FontSize="14" Width="223"
+                                         PreviewKeyUp="PreviewKeyUp_EnhanceTextBoxSearch" VerticalContentAlignment="Center"
+                                         DataObject.Pasting="Pasting_EnhanceTextSearch" BorderThickness="0"/>
                             </Grid>
 
                         </StackPanel>
                     </DockPanel>
                 </Border>
             </StackPanel>
-            <TextBlock></TextBlock>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,5,10,0">
+                <RadioButton Name="SearchFilter" IsChecked="True" FontSize="14"
+                             VerticalContentAlignment="Center">Tên Thành Viên</RadioButton>
+                <RadioButton Margin="5 0 0 0" FontSize="14"
+                             VerticalContentAlignment="Center">Địa điểm</RadioButton>
+            </StackPanel>
         </DockPanel>
 
         <!--Hình ảnh và tên các món ăn-->
-        <ScrollViewer VerticalScrollBarVisibility="Hidden" Grid.Row="2" Grid.Column="1">
+        <ScrollViewer VerticalScrollBarVisibility="Hidden" Grid.Row="2" Grid.Column="1" Visibility="Visible">
             <Grid Name="TripListGrid">
                 <ItemsControl Grid.Row="1" Name="TripButtonItemsControl">
                     <ItemsControl.ItemsPanel>
@@ -481,7 +485,7 @@
                 </Border.Effect>
 
                 <TextBlock FontSize="25" Text="CHI TIẾT CHUYẾN ĐI" VerticalAlignment="Center" HorizontalAlignment="Center"
-                       Foreground="{DynamicResource ColorScheme}" FontWeight="ExtraBold" FontStyle="Italic"/>
+                       Foreground="{StaticResource  ColorScheme}" FontWeight="ExtraBold" FontStyle="Italic"/>
             </Border>
 
             <!--Hai nút chỉnh sửa hoặc xóa chuyến đi-->
@@ -499,7 +503,7 @@
                     </Button>
 
                     <!--Nút xóa chuyến đi-->
-                    <Button Grid.Row="1" BorderThickness="0" Width="35" Height="35">
+                    <Button Grid.Row="1" BorderThickness="0" Width="35" Height="35" Name="DeleteTripButton" Click="DeleteTripButton_Click">
                         <Image Source="Images/deleteRecipe.png" Width="22"
                                        RenderOptions.BitmapScalingMode="HighQuality"></Image>
                     </Button>
@@ -554,11 +558,11 @@
                     <DockPanel Grid.Row="1" Grid.Column="1" LastChildFill="True" Margin="5,0,0,0">
 
                         <TextBlock DockPanel.Dock="Top" Text="Các thành viên:" FontSize="14" FontWeight="DemiBold" Margin="2,0,0,0"/>
-                        <ListView ItemsSource="{Binding MembersList}" BorderThickness="0" 
+                        <ListView ItemsSource="{Binding MembersList}" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                               ScrollViewer.CanContentScroll="False" ScrollViewer.VerticalScrollBarVisibility="Hidden" Background="{x:Null}">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding MemberName}" FontSize="14"/>
+                                    <TextBlock Text="{Binding MemberName}" FontSize="14" TextWrapping="Wrap"/>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
@@ -611,6 +615,124 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
+                </Grid>
+
+            </Border>
+
+            <!--Biểu đồ hình tròn thể hiện số tiền chi của từng thành viên-->
+            <Border Grid.Row="2" Background="Gainsboro" 
+                    CornerRadius="10" Margin="10,10,0,10">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="5" Direction="230" Color="Black" ShadowDepth="8" Opacity="0.2"/>
+                </Border.Effect>
+
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="18" 
+                           FontWeight="Bold" Text="BIỂU ĐỒ CHI TRẢ" VerticalAlignment="Top"
+                               Foreground="{DynamicResource ColorScheme}"/>
+
+                    <lvc:PieChart Grid.Row="1" LegendLocation="Bottom" Name="ChargePie"
+                              IsVisibleChanged="ChargePie_IsVisibleChanged" Hoverable="True">
+                    </lvc:PieChart>
+
+                </Grid>
+
+            </Border>
+
+            <!--Biểu đồ hình cột thể hiện các khoản chi-->
+            <Border Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
+                    Background="Gainsboro" CornerRadius="10" Margin="10,10,0,10">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="5" Direction="230" Color="Black" ShadowDepth="8" Opacity="0.2"/>
+                </Border.Effect>
+
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="18" 
+                           FontWeight="Bold" Text="BIỂU ĐỒ KHOẢN CHI" VerticalAlignment="Top"
+                               Foreground="{DynamicResource ColorScheme}"/>
+
+                    <lvc:CartesianChart LegendLocation="Bottom" Grid.Row="1" Name="ChargeChart" IsVisibleChanged="ChargeChart_IsVisibleChanged">
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis Title="Chi phí"></lvc:Axis>
+                        </lvc:CartesianChart.AxisY>
+                    </lvc:CartesianChart>
+
+                </Grid>
+
+            </Border>
+
+            <!--Tổng kết số tiền thu chi, nhận thêm và trả lại cho từng thành viên-->
+            <Border Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2"
+                    Background="Gainsboro" CornerRadius="10" Margin="10,10,0,10">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="5" Direction="230" Color="Black" ShadowDepth="8" Opacity="0.2"/>
+                </Border.Effect>
+
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="18" 
+                           FontWeight="Bold" Text="TỔNG KẾT CHUYẾN ĐI" VerticalAlignment="Top"
+                               Foreground="{DynamicResource ColorScheme}"/>
+                    <DockPanel Grid.Row="1" LastChildFill="True">
+                        <StackPanel DockPanel.Dock="Top">
+                            <DockPanel LastChildFill="True">
+
+                                <TextBlock FontSize="14.5" Foreground="Gray" Text="Tổng: " VerticalAlignment="Center"/>
+                                <TextBlock Text="Nhận lại" VerticalAlignment="Center" 
+                                           DockPanel.Dock="Right" Margin="3.5,0,3,0"/>
+                                <Label Background="ForestGreen" Width="4" DockPanel.Dock="Right" Margin="4,0,0,0"></Label>
+                                <TextBlock FontSize="14.5" Name="SumChargeTextBlock" 
+                                           FontWeight="DemiBold" VerticalAlignment="Center"
+                                           Loaded="SumChargeTextBlock_Loaded" DockPanel.Dock="Right"
+                                           IsVisibleChanged="SumChargeTextBlock_IsVisibleChanged"></TextBlock>
+                                <Label/>
+                            </DockPanel>
+                            <DockPanel LastChildFill="True">
+                                <TextBlock FontSize="14.5" Foreground="Gray" Text="Trung bình: " VerticalAlignment="Center"/>
+                                <TextBlock Text="Trả thêm" VerticalAlignment="Center" 
+                                           DockPanel.Dock="Right" Margin="1.7,0,3,0"/>
+                                <Label Background="Red" Width="4" DockPanel.Dock="Right" Margin="4,0,0,0"></Label>
+                                <TextBlock FontSize="14.5" Name="AverageChargeTextBlock" 
+                                           FontWeight="DemiBold" VerticalAlignment="Center"
+                                           Loaded="AverageChargeTextBlock_Loaded" DockPanel.Dock="Right"
+                                           IsVisibleChanged="AverageChargeTextBlock_IsVisibleChanged"></TextBlock>
+                                <Label/>
+                            </DockPanel>
+                        </StackPanel>
+                        <ListView ItemsSource="{Binding MembersList}" Background="{x:Null}"
+                                  BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <DockPanel>
+                                        <TextBlock Text="{Binding MemberName}" FontSize="15"
+                                                   TextWrapping="Wrap" MaxWidth="80"/>
+                                        <TextBlock Text=":  " FontSize="15"/>
+                                        <TextBlock Name="memberSummaryTextBlock" FontSize="15"
+                                                   IsVisibleChanged="memberSummaryTextBlock_IsVisibleChanged"
+                                                   Loaded="memberSummaryTextBlock_Loaded"
+                                                   HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            
+                        </ListView>
+                    </DockPanel>
+
                 </Grid>
 
             </Border>
@@ -774,15 +896,28 @@
                                     <ColumnDefinition Width="1*"/>
                                     <ColumnDefinition Width="2*"/>
                                 </Grid.ColumnDefinitions>
-                                <DockPanel LastChildFill="True">
-                                    <TextBlock DockPanel.Dock="Left" FontSize="15"
+                                <StackPanel>
+                                    <DockPanel LastChildFill="True">
+                                        <TextBlock DockPanel.Dock="Left" FontSize="15"
                                                Margin="0,10,0,0" FontWeight="Medium">Tên thành viên:</TextBlock>
-                                    <Border CornerRadius="7" BorderThickness="1.5" BorderBrush="Gray"
+                                        <Border CornerRadius="7" BorderThickness="1.5" BorderBrush="Gray"
                                             Height="30" Margin="5,5,0,0" VerticalAlignment="Top" Background="GhostWhite">
-                                        <TextBox Text="{Binding MemberName}" BorderThickness="0" FontSize="14" Background="{x:Null}"
+                                            <TextBox Text="{Binding MemberName}" BorderThickness="0" FontSize="14" Background="{x:Null}"
                                                  Margin="5,0" Height="25.5" VerticalContentAlignment="Center"/>
-                                    </Border>
-                                </DockPanel>
+                                        </Border>
+                                    </DockPanel>
+
+                                    <DockPanel LastChildFill="True" Margin="0,7,0,0">
+                                        <TextBlock DockPanel.Dock="Left" FontSize="15"
+                                               Margin="0,10,0,0" FontWeight="Medium">Tiền thu trước:</TextBlock>
+                                        <Border CornerRadius="7" BorderThickness="1.5" BorderBrush="Gray"
+                                            Height="30" Margin="8,5,0,0" VerticalAlignment="Top" Background="GhostWhite">
+                                            <TextBox Text="{Binding Deposits}" BorderThickness="0" FontSize="14" Background="{x:Null}"
+                                                 Margin="5,0" Height="25.5" VerticalContentAlignment="Center" PreviewTextInput="NumberTextBox_PreviewTextInput"/>
+                                        </Border>
+                                    </DockPanel>
+                                </StackPanel>
+                                
                                 <StackPanel Grid.Column="1">
                                     <ListView ItemsSource="{Binding CostsList}" MaxHeight="200"
                                               ScrollViewer.VerticalScrollBarVisibility="Hidden"
@@ -812,7 +947,7 @@
                                                                 Height="30" Margin="5,2,0,0" VerticalAlignment="Top" Background="GhostWhite">
                                                             <TextBox Text="{Binding Charge}" BorderThickness="0" FontSize="14" 
                                                                      Background="{x:Null}" Margin="5,0" Height="25.5"
-                                                                     VerticalContentAlignment="Center"/>
+                                                                     VerticalContentAlignment="Center" PreviewTextInput="NumberTextBox_PreviewTextInput"/>
                                                         </Border>
                                                     </DockPanel>
                                                 </Grid>
@@ -850,14 +985,6 @@
             <!--Hai nút thêm và xóa thành viên trong chuyến đi-->
             <StackPanel Grid.Row="5" Grid.Column="2" Orientation="Horizontal" 
                         HorizontalAlignment="Right">
-                <!--<Button Margin="0,0,0,5" Background="White" BorderThickness="0" Name="DeleteMemeberButton" 
-                        Click="DeleteMemeberButton_Click" Height="35" VerticalAlignment="Top">
-                    <WrapPanel Margin="15,0">
-                        <Image Source="Images/deleteRecipe.png" Width="20" Margin="0,0,5,0" 
-                                       RenderOptions.BitmapScalingMode="HighQuality"></Image>
-                        <TextBlock VerticalAlignment="Center" FontSize="15"  FontWeight="Medium">XÓA THÀNH VIÊN</TextBlock>
-                    </WrapPanel>
-                </Button>-->
                 <Button Name="DeleteMemeberButton" Foreground="{DynamicResource ColorScheme}" Height="33"
                         Click="DeleteMemeberButton_Click" Margin="0,0,10,0"
                         Background="White" BorderThickness="1.3" BorderBrush="{DynamicResource ColorScheme}">
@@ -883,6 +1010,48 @@
                 </Button>
             </StackPanel>
         </Grid>
+
+        <!--Nút cài đặt-->
+        <StackPanel Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Name="SettingStackPanel" Margin="15,6,0,0" Visibility="Collapsed">
+            <TextBlock FontSize="16" Margin="0,0,0,10">Select color scheme</TextBlock>
+            <ItemsControl Name="SettingColorItemsControl" Margin="0,0,0,10" Width="290" HorizontalAlignment="Left">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Margin="0,0,8,8" Width="50" Height="50" Background="{Binding Color}"
+                                    BorderThickness="0" Click="ColorButton_Click"></Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <CheckBox Name="ShowSplashScreenCheckBox"
+                              HorizontalAlignment="Left"
+                              Foreground="Black"
+                              FontSize="14"
+                              Checked="ShowSplashScreenCheckBox_Checked" Unchecked="ShowSplashScreenCheckBox_Unchecked"
+                              VerticalContentAlignment="Center">
+                Show Splash Screen
+            </CheckBox>
+        </StackPanel>
+
+        <!--Nút thông tin nhóm lập trình-->
+        <StackPanel Grid.Row="1" Grid.RowSpan="2" Grid.Column="1"
+                    Name="AboutStackPanel" Margin="15,6,0,0" Visibility="Collapsed">
+            <TextBlock FontSize="16" Margin="0,20,0,10" FontWeight="Bold">Windows programming - 18_31</TextBlock>
+            <TextBlock FontSize="16" Margin="0,0,0,30">VNUHCM - University of Science</TextBlock>
+            <TextBlock FontSize="16" Margin="0,0,0,10" FontWeight="Bold">Contact</TextBlock>
+            <TextBlock FontSize="16" Margin="0,0,0,30">
+                        <Hyperlink>18120082@student.hcmus.edu.vn</Hyperlink>
+            </TextBlock>
+            <TextBlock FontSize="16" Margin="0,0,0,10" FontWeight="Bold">Developers</TextBlock>
+            <TextBlock FontSize="16" Margin="0,0,0,10">Phạm Tấn - 18120082</TextBlock>
+            <TextBlock FontSize="16" Margin="0,0,0,10">Bùi Văn Vĩ - 18120106</TextBlock>
+            <TextBlock FontSize="16" Margin="0,0,0,30">Nguyễn Thanh Duy - 18120171</TextBlock>
+            <TextBlock FontSize="16" Margin="0,0,0,10">Copyright © 2020</TextBlock>
+        </StackPanel>
     </Grid>
 </Window>
 
