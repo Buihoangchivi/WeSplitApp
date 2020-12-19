@@ -14,10 +14,6 @@
 
     <Window.Resources>
         <local:Converter x:Key="converter"/>
-        <local:SumChargeConverter x:Key="sumConverter"/>
-        <local:AverageChargeConverter x:Key="averageConverter"/>
-        <local:SummaryConverter x:Key="summaryConverter"/>
-        <local:WidthConverter x:Key="widthConverter"/>
         <DataTemplate x:Key="groupingHeaderTemplate">
             <TextBlock Foreground ="{Binding ColorScheme}"
              FontWeight="Bold" FontSize="16"/>
@@ -376,7 +372,7 @@
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
-                                                <Button BorderThickness="0" Width="226" Background="White">
+                                                <Button BorderThickness="0" Width="226" Background="White" Click="SearchTripButton_Click">
                                                     <Button.Content>
                                                         <Grid>
                                                             <Grid.ColumnDefinitions>
